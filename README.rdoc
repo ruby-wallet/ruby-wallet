@@ -1,0 +1,114 @@
+= ruby-wallet
+
+ruby-wallet provides complete access to the bitcoind JSON-RPC API and organizies the features with a wallet abstraction.
+
+
+== Installation
+
+Add the following to your Gemfile
+
+  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "bitcoin"
+
+
+== Usage
+
+The simplest possible usage
+
+  RubyWallet.connect(:username => 'username', :password => 'password').balance
+  # => 0.001
+
+
+== Host, Port and SSL
+
+You can specify connection information for remote clients.
+
+  wallet = RubyWallet.connect(:username => 'username', :password => 'password',
+                              :host => 'example.com', :port => 38332, :ssl => true)
+
+You can confirm if addresses are valid using the wallet method
+
+  wallet.validate_address(address)
+
+You can view the recent transactions of the entire wallet, or just a specific range.
+
+  wallet.recent_transactions(15)         # Returns 15 transactions 
+  wallet.recent_transactions(15,999)     # Returns 15-999
+
+== Wallet Encryption
+
+Bitcoin now supports wallet encryption. You should encrypt your wallet and unlock as needed for a specific amount of time and lock the wallet.
+
+  wallet.encrypt("passphrase")
+  wallet.unlock("passphrase", 20)        # 20 seconds until the wallet relock automatically
+  wallet.unlock("passphrase")            # defaults to 20 seconds
+  wallet.lock
+
+
+You can pass the encryption passphrase along with a block of code to be executed once the wallet is unlocked. After the code is executed the wallet is re-locked automatically.
+
+  wallet.unlock("passphrase") do
+    account.send_amount 5.5, to: address
+  end
+
+
+== Wallet Accounts
+
+A wallet has many accounts, each account organizes more than one bitcoin addresses in the wallet into groups by their label.
+
+  account = wallet.accounts.new('label name')
+  wallet.accounts.with_balance         # returns array of the accounts with balance > 0
+
+  account.addresses.count              # 1, as it already comes with an address
+  account.balance                      # returns the balance of the account
+  account.total_received               # returns the total amount received by the account
+  account.transactions(limit: 5)       # returns array of 5 BitWallet::Transaction
+  account.transactions                 # returns array of 10 BitWallet::Transaction
+
+You can send bitcoins directly from an account, with validations to prevent overspending.
+
+  account.send_amount 5.5, to: address # sends 5.5 bitcoin to the BitWallet::Address#address
+
+
+# Document send_many function
+
+== Account Addresses
+
+Each account organizes a collection of addresses under a label. Addresses have their own set of useful methods.
+
+  address = account.addresses.new
+  address.address                      # 8hdsakdjh82d9327ccb64642c - the address hash
+  address.total_received               # returns the total amount received by the address
+  address.private_key                  # returns the private key for the address
+
+
+== Account Transactions
+
+A transaction has the following methods
+
+  transaction = account.transactions
+
+  transaction.id
+  transaction.account
+  transaction.address
+  transaction.recipient_account
+  transaction.amount
+  transaction.category
+  transaction.confirmations
+  transaction.occurred_at
+  transaction.received_at
+
+== Credits
+
+Ruby-wallet was originally based on a combination the existing projects 'bitcoin-client' created by sinisterchimpmunk and 'bit_wallet' created by ramontayag.
+
+Share feature request, add any issues you run into or contribute to the project.
+
+== Future Plans
+
+I will build out the features, fix code, replace slow logic and then make this software coin neutral.
+
+I plan to use this as the base for a new spree bitcoin plugin in the near future.
+
+Donate to the ruby-wallet projects 
+16KnvuTmxcVnQcchjeawKmmcDx1J29JYB
+

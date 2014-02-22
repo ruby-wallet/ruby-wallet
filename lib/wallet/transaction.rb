@@ -13,7 +13,7 @@ module RubyWallet
 
     def initialize(wallet, args)
       @wallet = wallet
-      #@account = wallet.accounts.new(args[:account])
+      @account = args["account"] if args["account"] 
       @id = args["txid"] if args["txid"]
       @address = args["address"]
       @recipient_account = args["otheraccount"] if args["otheraccount"]

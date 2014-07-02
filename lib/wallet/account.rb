@@ -13,11 +13,11 @@ module RubyWallet
     end
 
     def addresses
-      @addresses ||= @wallet.getaddressesbyaccount(name)
+      @addresses ||= client.getaddressesbyaccount(name)
     end
 
     def balance(min_conf = 0)
-      @wallet.getbalance(@name, min_conf)
+      client.getbalance(@name, min_conf)
     end
 
     def send_amount(amount, options={})
@@ -61,11 +61,11 @@ module RubyWallet
       else
         fail ArgumentError, "could not find account"
       end
-      @wallet.move(@name, to, amount, RubyWallet.config.min_conf)
+      client.move(@name, to, amount, RubyWallet.config.min_conf)
     end
 
     def total_received
-      @wallet.getreceivedbyaccount(@name, RubyWallet.config.min_conf)
+      client.getreceivedbyaccount(@name, RubyWallet.config.min_conf)
     end
 
     def ==(other_account)
@@ -73,7 +73,7 @@ module RubyWallet
     end
 
     def transactions(from = 0, to)
-      wallet.listtransactions(@name, to, from).map do |hash|
+      client.listtransactions(@name, to, from).map do |hash|
         Transaction.new(@wallet, hash)
       end
     end

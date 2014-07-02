@@ -8,8 +8,9 @@ module RubyWallet
     end
 
     def initialize(wallet)
-      wallet.listaccounts.each do |account|
-        self.push(Account.new(wallet, account[0]))
+      @wallet = wallet
+      @wallet.listaccounts.each do |account|
+        self.push(Account.new(@wallet, account[0]))
       end
     end
 
@@ -17,7 +18,7 @@ module RubyWallet
       if self.includes_account_name?(name)
         account = self.detect {|a| a.name == name}
       else
-        account = Account.new(wallet, name)
+        account = Account.new(@wallet, name)
         account.generate_new_address
         self << account
       end
@@ -35,7 +36,7 @@ module RubyWallet
     private
 
     def existing_accounts
-      wallet.listaccounts.keys
+      @wallet.listaccounts.keys
     end
 
   end

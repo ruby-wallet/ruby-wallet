@@ -1,5 +1,6 @@
 module RubyWallet
   class Account
+
     attr_reader :wallet, :name
 
     def initialize(wallet, name)
@@ -12,11 +13,11 @@ module RubyWallet
     end
 
     def addresses
-      @addresses ||= wallet.getaddressesbyaccount(name)
+      @addresses ||= @wallet.getaddressesbyaccount(name)
     end
 
     def balance(min_conf = 0)
-      wallet.getbalance(self.name, min_conf)
+      @wallet.getbalance(@name, min_conf)
     end
 
     def send_amount(amount, options={})
@@ -25,7 +26,7 @@ module RubyWallet
       else
         fail ArgumentError, 'address must be specified'
       end
-      client.sendfrom(self.name,
+      client.sendfrom(@name,
                       options[:to],
                       amount,
                       RubyWallet.config.min_conf)
@@ -40,7 +41,7 @@ module RubyWallet
         addresses_values[address] = value
       end
 
-      txid = client.send_many(self.name,
+      txid = client.send_many(@name,
                               addresses_values,
                               RubyWallet.config.min_conf)
       txid
@@ -54,26 +55,26 @@ module RubyWallet
     end
 
     def move_to(amount, options={})
-      to_account = wallet.accounts.where_account_name(options[:to])
+      to_account = @wallet.accounts.where_account_name(options[:to])
       if to_account
         to = to_account.name
       else
         fail ArgumentError, "could not find account"
       end
-      wallet.move(self.name, to, amount, RubyWallet.config.min_conf)
+      @wallet.move(@name, to, amount, RubyWallet.config.min_conf)
     end
 
     def total_received
-      wallet.getreceivedbyaccount(self.name, RubyWallet.config.min_conf)
+      @wallet.getreceivedbyaccount(@name, RubyWallet.config.min_conf)
     end
 
     def ==(other_account)
-      self.name == other_account.name
+      @name == other_account.name
     end
 
     def transactions(from = 0, to)
-      wallet.listtransactions(self.name, to, from).map do |hash|
-        Transaction.new(self.wallet, hash)
+      wallet.listtransactions(@name, to, from).map do |hash|
+        Transaction.new(@wallet, hash)
       end
     end
 
@@ -85,7 +86,7 @@ module RubyWallet
         error = if hash[:error]
                   case hash[:error][:code]
                   when -6
-                    InsufficientFunds.new("cannot send an amount more than what this account (#{self.name}) has")
+                    InsufficientFunds.new("cannot send an amount more than what this account (#{@name}) has")
                   end
                 end
         fail error if error

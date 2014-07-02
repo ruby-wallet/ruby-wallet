@@ -4,6 +4,7 @@ module RubyWallet
     attr_reader :account, :address
 
     def initialize(account, address=nil)
+      @account = account
       @address = if address
                    address
                  else
@@ -12,15 +13,15 @@ module RubyWallet
     end
 
     def total_received
-      account.wallet.getreceivedbyaddress(self.address, RubyWallet.config.min_conf)
+      @account.wallet.getreceivedbyaddress(@address, RubyWallet.config.min_conf)
     end
 
     def private_key
-      account.wallet.private_key(self.address)
+      @account.wallet.private_key(@address)
     end
 
     def ==(other_address)
-      self.address == other_address.address
+      @address == other_address.address
     end
 
   end

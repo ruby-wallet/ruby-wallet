@@ -1,4 +1,5 @@
 require 'rest_client'
+require 'openssl'
 
 class Bitcoin::RPC
   def initialize(options)

@@ -34,7 +34,7 @@ module RubyWallet
     private
 
     def existing_accounts
-      @wallet.client.listaccounts.keys
+      @wallet.listaccounts.keys
     end
 
   end

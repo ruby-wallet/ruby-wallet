@@ -5,11 +5,10 @@ module RubyWallet
     delegate :wallet, to: :account
 
     def initialize(account, address=nil)
-      @account = account
       @address = if address
                    address
                  else
-                   account.getnewaddress(@account.name)
+                   wallet.getnewaddress(account.name)
                  end
     end
 

@@ -13,59 +13,42 @@ module RubyWallet
     end
 
     def addresses
-      @addresses ||= client.getaddressesbyaccount(name)
+      @addresses ||= @wallet.addresses_by_account(name)
     end
 
     def balance(min_conf = 0)
-      client.getbalance(@name, min_conf)
+      @wallet.balance(@name, min_conf)
     end
 
-    def send_amount(amount, options={})
-      if options[:to]
-        options[:to] = options[:to].address if options[:to].is_a?(Address)
-      else
+    def send_amount(amount, recipient)
+      unless recipient and recipient.is_a?(Address)
         fail ArgumentError, 'address must be specified'
       end
-      client.sendfrom(@name,
-                      options[:to],
-                      amount,
-                      RubyWallet.config.min_conf)
-      rescue RestClient::InternalServerError => e
-        parse_error e.response
+      @wallet.send_from_to(@name, recipient, amount)
     end
 
-    def send_many(account_values={})
-      addresses_values = {}
-      account_values.each do |key, value|
+    def send_from_to_many(account={})
+      addresses = {}
+      accounts.each do |key, value|
         address = key.respond_to?(:address) ? key.address : key
-        addresses_values[address] = value
+        addresses[address] = value
       end
 
-      txid = client.send_many(@name,
-                              addresses_values,
-                              RubyWallet.config.min_conf)
-      txid
-    rescue => e
-      error_message = JSON.parse(e.response).with_indifferent_access
-      if error_message[:error][:code] == -6
-        fail InsufficientFunds, "'#{self.name}' does not have enough funds"
-      else
-        raise e
-      end
+      @wallet.send_many(@name, addresses_values)
     end
 
-    def move_to(amount, options={})
-      to_account = @wallet.accounts.where_account_name(options[:to])
-      if to_account
-        to = to_account.name
+    def move_to(amount, to)
+      recipient_account = @wallet.accounts.where_account_name(to)
+      if recipient_account
+        recipient = to_account.name
       else
         fail ArgumentError, "could not find account"
       end
-      client.move(@name, to, amount, RubyWallet.config.min_conf)
+      @wallet.transfer(@name, recipient, amount)
     end
 
     def total_received
-      client.getreceivedbyaccount(@name, RubyWallet.config.min_conf)
+      @wallet.received_by_account(@name)
     end
 
     def ==(other_account)
@@ -73,23 +56,7 @@ module RubyWallet
     end
 
     def transactions(from = 0, to)
-      client.listtransactions(@name, to, from).map do |hash|
-        Transaction.new(@wallet, hash)
-      end
+      @wallet.transactions(@name, to, from)
     end
-
-    private
-
-      def parse_error(response)
-        json_response = JSON.parse(response)
-        hash = json_response.with_indifferent_access
-        error = if hash[:error]
-                  case hash[:error][:code]
-                  when -6
-                    InsufficientFunds.new("cannot send an amount more than what this account (#{@name}) has")
-                  end
-                end
-        fail error if error
-      end
   end
 end

@@ -13,6 +13,7 @@ module RubyWallet
       client.getreceivedbyaccount(account, min_conf)
     end
 
+    # This is more raw than the next function
     def listaccounts
       client.listaccounts
     end

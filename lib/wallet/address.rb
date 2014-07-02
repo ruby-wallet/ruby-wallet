@@ -9,7 +9,7 @@ module RubyWallet
       @address = if address
                    address
                  else
-                   wallet.getnewaddress(@account.name)
+                   account.getnewaddress(@account.name)
                  end
     end
 

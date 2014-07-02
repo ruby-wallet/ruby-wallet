@@ -8,16 +8,16 @@ module RubyWallet
       @address = if address
                    address
                  else
-                   account.wallet.getnewaddress(account.name)
+                   client.getnewaddress(account.name)
                  end
     end
 
     def total_received
-      @account.wallet.getreceivedbyaddress(@address, RubyWallet.config.min_conf)
+      client.getreceivedbyaddress(@address, RubyWallet.config.min_conf)
     end
 
     def private_key
-      @account.wallet.private_key(@address)
+      client.private_key(@address)
     end
 
     def ==(other_address)

@@ -1,5 +1,4 @@
 require 'rest_client'
-require 'openssl'
 
 class Bitcoin::RPC
   def initialize(options)
@@ -23,6 +22,7 @@ class Bitcoin::RPC
     url
   end
 
+  # Need to rebuild this function, it is poorly implemented
   def dispatch(request)
     begin
       respdata = RestClient.post service_url, request.to_post_data

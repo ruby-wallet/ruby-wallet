@@ -110,5 +110,5 @@ I will build out the features, fix code, replace slow logic and then make this s
 I plan to use this as the base for a new spree bitcoin plugin in the near future.
 
 Donate to the ruby-wallet projects 
-16KnvuTmxcVnQcchjeawKmmcDx1J29JYB
+1LJtuko15Ck1gq5H9K24iGnA1yvtcBMYa4
 

@@ -2,16 +2,14 @@ module RubyWallet
   class Accounts < Array
 
     attr_reader :wallet
-    delegate :client, to: :wallet
 
     def with_balance
       self.detect { |a| a.balance > 0 }
     end
 
     def initialize(wallet)
-      @wallet = wallet
-      client.listaccounts.each do |account|
-        self.push(Account.new(@wallet, account[0]))
+      wallet.listaccounts.each do |account|
+        self.push(Account.new(wallet, account[0]))
       end
     end
 
@@ -37,7 +35,7 @@ module RubyWallet
     private
 
     def existing_accounts
-      client.listaccounts.keys
+      wallet.listaccounts.keys
     end
 
   end

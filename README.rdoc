@@ -99,7 +99,7 @@ A transaction has the following methods
 
 == Credits
 
-Ruby-wallet was originally based on a combination the existing projects 'bitcoin-client' created by sinisterchimpmunk and 'bit_wallet' created by ramontayag.
+Ruby-wallet was originally based on a combination the existing projects 'bitcoin-client' created by sinisterchimpmunk and 'bit_wallet' created by ramontayag. Over time I have been heavily modifying the two projects.
 
 Share feature request, add any issues you run into or contribute to the project.
 
@@ -107,7 +107,8 @@ Share feature request, add any issues you run into or contribute to the project.
 
 I will build out the features, fix code, replace slow logic and then make this software coin neutral.
 
-I plan to use this as the base for a new spree bitcoin plugin in the near future.
+I would like to implement the new RPC features such as multisigs. I would also like to make it easy to receive push notifications from the bitcoin client so I don't have to short poll for changes.
+
 
 Donate to the ruby-wallet projects 
 1LJtuko15Ck1gq5H9K24iGnA1yvtcBMYa4

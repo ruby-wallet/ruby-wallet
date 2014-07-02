@@ -1,7 +1,7 @@
 module RubyWallet
   class Accounts < Array
 
-    
+    attr_reader :wallet
     delegate :client, to: :wallet
 
     def with_balance

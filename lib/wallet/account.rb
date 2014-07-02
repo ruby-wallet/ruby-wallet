@@ -1,7 +1,6 @@
 module RubyWallet
   class Account
     attr_reader :wallet, :name
-    delegate :client, to: :wallet
 
     def initialize(wallet, name)
       @wallet = wallet
@@ -13,11 +12,11 @@ module RubyWallet
     end
 
     def addresses
-      @addresses ||= client.getaddressesbyaccount(name)
+      @addresses ||= wallet.getaddressesbyaccount(name)
     end
 
     def balance(min_conf = 0)
-      client.getbalance(self.name, min_conf)
+      wallet.getbalance(self.name, min_conf)
     end
 
     def send_amount(amount, options={})
@@ -55,17 +54,17 @@ module RubyWallet
     end
 
     def move_to(amount, options={})
-      to_account = @wallet.accounts.where_account_name(options[:to])
+      to_account = wallet.accounts.where_account_name(options[:to])
       if to_account
         to = to_account.name
       else
         fail ArgumentError, "could not find account"
       end
-      client.move(self.name, to, amount, RubyWallet.config.min_conf)
+      wallet.move(self.name, to, amount, RubyWallet.config.min_conf)
     end
 
     def total_received
-      client.getreceivedbyaccount(self.name, RubyWallet.config.min_conf)
+      wallet.getreceivedbyaccount(self.name, RubyWallet.config.min_conf)
     end
 
     def ==(other_account)
@@ -73,7 +72,7 @@ module RubyWallet
     end
 
     def transactions(from = 0, to)
-      client.listtransactions(self.name, to, from).map do |hash|
+      wallet.listtransactions(self.name, to, from).map do |hash|
         Transaction.new(self.wallet, hash)
       end
     end

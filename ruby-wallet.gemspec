@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "bitcoin/version"
+require "coin/version"
 
 Gem::Specification.new do |s|
   s.name        = "ruby-wallet"
-  s.version     = Bitcoin::VERSION
+  s.version     = Coin::VERSION
   s.authors     = ["oGminor"]
   s.email       = ["oGminor@gmail.com"]
   s.homepage    = "http://github.com/ruby-wallet/ruby-wallet"
-  s.summary     = %q{Provides a Ruby library to the complete Bitcoin JSON-RPC API.}
-  s.description = "Provides a Ruby library to the complete to any Bitcoin based cryptocurrency "+
+  s.summary     = %q{A Ruby wrapper to any Bitcoin based crypto currency JSON-RPC API.}
+  s.description = "Provides a Ruby wrapper to any Bitcoin based cryptocurrency "+
                   "JSON-RPC API. Implements all methods listed at "+
                   "https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_Calls_list and "+
                   "lets you set options such as the host and port number, and whether to use SSL."

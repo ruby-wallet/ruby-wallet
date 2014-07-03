@@ -1,6 +1,6 @@
 require 'rest_client'
 
-class Bitcoin::RPC
+class Coin::RPC
   def initialize(options)
     @user, @pass = options[:user], options[:pass]
     @host, @port = options[:host], options[:port]
@@ -27,7 +27,7 @@ class Bitcoin::RPC
     begin
       respdata = RestClient.post service_url, request.to_post_data
       response = JSON.parse(respdata)
-      raise Bitcoin::Errors::RPCError, response['error'] if response['error']
+      raise Coin::Errors::RPCError, response['error'] if response['error']
       return response['result']
     rescue => e
       response = JSON.parse(e.to_s)

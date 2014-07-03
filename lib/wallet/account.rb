@@ -21,7 +21,8 @@ module RubyWallet
     end
 
     def send_amount(amount, recipient)
-      unless recipient and recipient.is_a?(Address)
+      # Could do a regex check here
+      unless recipient
         fail ArgumentError, 'address must be specified'
       end
       @wallet.send_from_to(@name, recipient, amount)

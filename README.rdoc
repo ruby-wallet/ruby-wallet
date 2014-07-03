@@ -1,13 +1,14 @@
-= ruby-wallet
+= Ruby-Wallet
 
-ruby-wallet provides complete access to the bitcoind JSON-RPC API and organizies the features with a wallet abstraction.
+Ruby-Wallet provides is capable of providing complete access to any of the Bitcoin based coind JSON-RPC API. Ruby-Wallet 
+organizies the features within a secure wallet abstraction, giving safe access to the the wallet from ruby.
 
 
 == Installation
 
 Add the following to your Gemfile
 
-  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "bitcoin"
+  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "coin"
 
 
 == Usage
@@ -61,13 +62,12 @@ A wallet has many accounts, each account organizes more than one bitcoin address
   account.addresses.count              # 1, as it already comes with an address
   account.balance                      # returns the balance of the account
   account.total_received               # returns the total amount received by the account
-  account.transactions(limit: 5)       # returns array of 5 BitWallet::Transaction
-  account.transactions                 # returns array of 10 BitWallet::Transaction
+  account.transactions(5)              # returns array of the 5 latest transactions
+  account.transactions(5, 10)          # returns array of transactions between the 5th and 10th latest transaction
 
 You can send bitcoins directly from an account, with validations to prevent overspending.
 
-  account.send_amount 5.5, to: address # sends 5.5 bitcoin to the BitWallet::Address#address
-
+  account.send_amount 5.5, to: address # sends 5.5 bitcoin to the address
 
 # Document send_many function
 
@@ -78,6 +78,8 @@ Each account organizes a collection of addresses under a label. Addresses have t
   address = account.addresses.new
   address.address                      # 8hdsakdjh82d9327ccb64642c - the address hash
   address.total_received               # returns the total amount received by the address
+
+  # This feature has been deprecated for security purposes
   address.private_key                  # returns the private key for the address
 
 
@@ -97,19 +99,17 @@ A transaction has the following methods
   transaction.occurred_at
   transaction.received_at
 
-== Credits
-
-Ruby-wallet was originally based on a combination the existing projects 'bitcoin-client' created by sinisterchimpmunk and 'bit_wallet' created by ramontayag. Over time I have been heavily modifying the two projects.
-
-Share feature request, add any issues you run into or contribute to the project.
 
 == Future Plans
 
-I will build out the features, fix code, replace slow logic and then make this software coin neutral.
+I would like to implement the new RPC features such as multisigs, and feautres unique to other 
+coins now that the software is more coin neutral. 
 
-I would like to implement the new RPC features such as multisigs. I would also like to make it easy to receive push notifications from the bitcoin client so I don't have to short poll for changes.
+I would also like to make it easy to receive push notifications from the coind client so I don't 
+have to short poll for new transactions and balance changes.
 
 
-Donate to the ruby-wallet projects 
+Donate to the ruby-wallet project
+
 1LJtuko15Ck1gq5H9K24iGnA1yvtcBMYa4
 

@@ -80,13 +80,13 @@ module RubyWallet
       client.lock
     end
 
-    def validate_address(bitcoinaddress)
-      client.validateaddress(bitcoinaddress)
+    def validate_address(coinaddress)
+      client.validateaddress(coinaddress)
     end
 
     private
       def client
-        @client ||= Bitcoin(@config[:username],
+        @client ||= Coin(@config[:username],
                             @config[:password],
                             :port => (@config[:port] || "8332"),
                             :host => (@config[:host] || "localhost"),

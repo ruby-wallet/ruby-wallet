@@ -1,13 +1,13 @@
 require 'json'
 
-class Bitcoin::Request
+class Coin::Request
   attr_reader :service_name, :params
   
   def initialize(service_name, params = [])
     @service_name = service_name
     @params = params.dup
     
-    # bitcoin rejects null values even for optional params. Since
+    # coin rejects null values even for optional params. Since
     # even params following those may have default non-nil values,
     # we'll assume the first non-nil value marks a set of optional
     # params, and drop it and everything following it.

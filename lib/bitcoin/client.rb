@@ -1,4 +1,4 @@
-class Bitcoin::Client
+class Coin::Client
   attr_reader :api
   def user; api.user; end
   def pass; api.pass; end
@@ -17,7 +17,7 @@ class Bitcoin::Client
   end
 
   def initialize(user, pass, options = {})
-    @api = Bitcoin::API.new({ :user => user, :pass => pass }.merge(options))
+    @api = Coin::API.new({ :user => user, :pass => pass }.merge(options))
   end
 
   # Safely copies wallet.dat to destination, which can be a directory or a path with filename.
@@ -26,11 +26,11 @@ class Bitcoin::Client
   end
 
   # Returns the account associated with the given address.
-  def getaccount(bitcoinaddress)
-    @api.request 'getaccount', bitcoinaddress
+  def getaccount(coinaddress)
+    @api.request 'getaccount', coinaddress
   end
 
-  # Returns the current bitcoin address for receiving payments to this account.
+  # Returns the current coin address for receiving payments to this account.
   def getaccountaddress(account)
     @api.request 'getaccountaddress', account
   end
@@ -99,9 +99,9 @@ class Bitcoin::Client
     @api.request 'getreceivedbyaccount', account, minconf
   end
 
-  # Returns the total amount received by +bitcoinaddress+ in transactions with at least +minconf+ confirmations.
-  def getreceivedbyaddress(bitcoinaddress, minconf = 1)
-    @api.request 'getreceivedbyaddress', bitcoinaddress, minconf
+  # Returns the total amount received by +coinaddress+ in transactions with at least +minconf+ confirmations.
+  def getreceivedbyaddress(coinaddress, minconf = 1)
+    @api.request 'getreceivedbyaddress', coinaddress, minconf
   end
 
   # Get detailed information about +txid+
@@ -148,7 +148,7 @@ class Bitcoin::Client
   #   :amount        => total amount received by the address
   #   :confirmations => number of confirmations of the most recent transaction included
   #
-  # To get a list of accounts on the system, execute bitcoind listreceivedbyaddress 0 true
+  # To get a list of accounts on the system, execute coind listreceivedbyaddress 0 true
   def listreceivedbyaddress(minconf = 1, includeempty = false)
     @api.request 'listreceivedbyaddress', minconf, includeempty
   end
@@ -164,8 +164,8 @@ class Bitcoin::Client
   end
 
   # +amount+ is a real and is rounded to 8 decimal places. Returns the transaction ID if successful.
-  def sendfrom(fromaccount, tobitcoinaddress, amount, minconf = 1, comment = nil, comment_to = nil)
-    @api.request 'sendfrom', fromaccount, tobitcoinaddress, amount, minconf, comment, comment_to
+  def sendfrom(fromaccount, tocoinaddress, amount, minconf = 1, comment = nil, comment_to = nil)
+    @api.request 'sendfrom', fromaccount, tocoinaddress, amount, minconf, comment, comment_to
   end
 
   # +amount+ is a real and is rounded to 8 decimal places. Returns the transaction ID if successful.
@@ -174,13 +174,13 @@ class Bitcoin::Client
   end
 
   # +amount+ is a real and is rounded to 8 decimal places
-  def sendtoaddress(bitcoinaddress, amount, comment = nil, comment_to = nil)
-    @api.request 'sendtoaddress', bitcoinaddress, amount, comment, comment_to
+  def sendtoaddress(coinaddress, amount, comment = nil, comment_to = nil)
+    @api.request 'sendtoaddress', coinaddress, amount, comment, comment_to
   end
 
   # Sets the account associated with the given address.
-  def setaccount(bitcoinaddress, account)
-    @api.request 'setaccoint', bitcoinaddress, account
+  def setaccount(coinaddress, account)
+    @api.request 'setaccount', coinaddress, account
   end
 
   # +generate+ is true or false to turn generation on or off.
@@ -194,19 +194,19 @@ class Bitcoin::Client
     @api.request 'stop'
   end
 
-  # Return information about +bitcoinaddress+.
-  def validateaddress(bitcoinaddress)
-    @api.request 'validateaddress', bitcoinaddress
+  # Return information about +coinaddress+.
+  def validateaddress(coinaddress)
+    @api.request 'validateaddress', coinaddress
   end
 
-  # Sign a message using +bitcoinaddress+.
-  def signmessage(bitcoinaddress, message)
-    @api.request 'signmessage', bitcoinaddress, message
+  # Sign a message using +coinaddress+.
+  def signmessage(coinaddress, message)
+    @api.request 'signmessage', coinaddress, message
   end
 
-  # Verify signature made by +bitcoinaddress+.
-  def verifymessage(bitcoinaddress, signature, message)
-    @api.request 'verifymessage', bitcoinaddress, signature, message
+  # Verify signature made by +coinaddress+.
+  def verifymessage(coinaddress, signature, message)
+    @api.request 'verifymessage', coinaddress, signature, message
   end
 
   # version 0.7 Returns data about each connected node.

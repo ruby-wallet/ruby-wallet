@@ -1,1 +1,1 @@
-require File.expand_path("bitcoin", File.dirname(__FILE__))
+require File.expand_path("coin", File.dirname(__FILE__))

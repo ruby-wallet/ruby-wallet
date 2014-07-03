@@ -7,10 +7,10 @@ Gem::Specification.new do |s|
   s.version     = Bitcoin::VERSION
   s.authors     = ["oGminor"]
   s.email       = ["oGminor@gmail.com"]
-  s.homepage    = "http://github.com/rocketscientists/ruby-wallet"
+  s.homepage    = "http://github.com/ruby-wallet/ruby-wallet"
   s.summary     = %q{Provides a Ruby library to the complete Bitcoin JSON-RPC API.}
-  s.description = "Provides a Ruby library to the complete Bitcoin JSON-RPC API. "+
-                  "Implements all methods listed at "+
+  s.description = "Provides a Ruby library to the complete to any Bitcoin based cryptocurrency "+
+                  "JSON-RPC API. Implements all methods listed at "+
                   "https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_Calls_list and "+
                   "lets you set options such as the host and port number, and whether to use SSL."
 

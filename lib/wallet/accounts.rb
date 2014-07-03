@@ -7,7 +7,7 @@ module RubyWallet
 
     def initialize(wallet)
       @wallet = wallet
-      @wallet.listaccounts.each do |account|
+      @wallet.list_accounts.each do |account|
         self.push(Account.new(@wallet, account[0]))
       end
     end
@@ -34,7 +34,7 @@ module RubyWallet
     private
 
     def existing_accounts
-      @wallet.listaccounts.keys
+      @wallet.list_accounts.keys
     end
 
   end

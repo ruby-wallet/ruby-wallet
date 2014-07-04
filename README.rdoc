@@ -1,7 +1,7 @@
 = Ruby-Wallet
 
 Ruby-Wallet provides complete access to any of the Bitcoin based coind JSON-RPC API. Ruby-Wallet 
-organizies the features within a secure wallet abstraction, giving safe access to the the wallet from ruby.
+organizes the features within a secure wallet abstraction, giving safe access to the the wallet from Ruby.
 
 
 == Installation

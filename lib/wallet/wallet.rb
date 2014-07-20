@@ -86,11 +86,11 @@ module RubyWallet
 
     private
       def client
-        @client ||= Coin(@config[:username],
-                            @config[:password],
-                            :port => (@config[:port] || "8332"),
-                            :host => (@config[:host] || "localhost"),
-                            :ssl => (@config[:ssl] || false))
+        @client ||= Coind(@config[:username],
+                          @config[:password],
+                          :port => (@config[:port] || "8332"),
+                          :host => (@config[:host] || "localhost"),
+                          :ssl => (@config[:ssl] || false))
       end
 
       def parse_error(response)

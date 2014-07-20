@@ -1,4 +1,4 @@
-module Coin::Errors
+module Coind::Errors
   class RPCError < StandardError
   end
 end

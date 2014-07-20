@@ -8,7 +8,7 @@ organizes the features within a secure wallet abstraction, giving safe access to
 
 Add the following to your Gemfile
 
-  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "coin"
+  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "coind"
 
 
 == Usage

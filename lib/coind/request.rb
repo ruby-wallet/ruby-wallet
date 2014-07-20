@@ -1,6 +1,6 @@
 require 'json'
 
-class Coin::Request
+class Coind::Request
   attr_reader :service_name, :params
   
   def initialize(service_name, params = [])

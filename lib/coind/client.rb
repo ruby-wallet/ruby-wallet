@@ -1,4 +1,4 @@
-class Coin::Client
+class Coind::Client
   attr_reader :api
   def user; api.user; end
   def pass; api.pass; end
@@ -17,7 +17,7 @@ class Coin::Client
   end
 
   def initialize(user, pass, options = {})
-    @api = Coin::API.new({ :user => user, :pass => pass }.merge(options))
+    @api = Coind::API.new({ :user => user, :pass => pass }.merge(options))
   end
 
   # Safely copies wallet.dat to destination, which can be a directory or a path with filename.

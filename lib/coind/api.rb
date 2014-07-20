@@ -1,4 +1,4 @@
-class Coin::API
+class Coind::API
   attr_reader :options
   attr_reader :params
 
@@ -27,8 +27,8 @@ class Coin::API
   end
 
   def request(service_name, *params)
-    req = Coin::Request.new(service_name, params)
+    req = Coind::Request.new(service_name, params)
     req.to_json
-    Coin::RPC.new(to_hash).dispatch(req)
+    Coind::RPC.new(to_hash).dispatch(req)
   end
 end

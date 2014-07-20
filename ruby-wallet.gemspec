@@ -4,7 +4,7 @@ require "coind/version"
 
 Gem::Specification.new do |s|
   s.name        = "ruby-wallet"
-  s.version     = Coin::VERSION
+  s.version     = Coind::VERSION
   s.authors     = ["oGminor"]
   s.email       = ["oGminor@gmail.com"]
   s.homepage    = "http://github.com/ruby-wallet/ruby-wallet"

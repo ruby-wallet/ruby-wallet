@@ -29,9 +29,9 @@ class Coind::RPC
       response = JSON.parse(respdata)
       raise Coin::Errors::RPCError, response['error'] if response['error']
       return response['result']
-    rescue
+    rescue =>
       #response = JSON.parse(e.to_s)
-      return response
+      return e
     end
   end
 

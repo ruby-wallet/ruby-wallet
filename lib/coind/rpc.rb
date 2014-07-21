@@ -31,6 +31,7 @@ class Coind::RPC
       raise Coin::Errors::RPCError, response['error'] if response['error']
       return response['result']
     rescue => e
+      p e.to_s
       p response
       response = JSON.parse(e.to_s)
       return response

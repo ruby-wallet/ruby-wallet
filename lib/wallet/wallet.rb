@@ -4,6 +4,10 @@ module RubyWallet
     def initialize(config={})
       @config = config
     end
+    
+    def blockcount
+      client.getblockcount
+    end
 
     def new_address(account = nil)
       client.getnewaddress(account)

@@ -33,7 +33,7 @@ class Coind::RPC
     rescue => e
       p e.to_s
       p response
-      response = JSON.parse(e.to_s)
+      #response = JSON.parse(e.to_s)
       return response
     end
   end

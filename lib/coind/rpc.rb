@@ -26,10 +26,12 @@ class Coind::RPC
   def dispatch(request)
     begin
       respdata = RestClient.post service_url, request.to_post_data
+      p response
       response = JSON.parse(respdata)
       raise Coin::Errors::RPCError, response['error'] if response['error']
       return response['result']
     rescue => e
+      p response
       response = JSON.parse(e.to_s)
       return response
     end

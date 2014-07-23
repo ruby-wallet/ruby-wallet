@@ -33,7 +33,7 @@ class Coind::RPC
       if !!(/{\S+:\S+}/ =~ e.to_s)
         response = JSON.parse(e.to_s)
       else
-        response = e.to_s
+        response = {'error': e.to_s}
       end
       return response
     end

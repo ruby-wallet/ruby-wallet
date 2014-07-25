@@ -5,8 +5,8 @@ module RubyWallet
       @config = config
     end
     
-    def blockcount
-      client.getblockcount
+    def blockchain_up_to_date?
+      (client.getblockcount < client.getblocknumber)
     end
 
     def get_transaction(txid)

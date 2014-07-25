@@ -30,9 +30,9 @@ class Coind::RPC
       raise Coin::Errors::RPCError, response['error'] if response['error']
       return response['result']
     rescue => e
-      if !!(/{\S+:\S+}/ =~ e.to_s)
+      begin
         response = JSON.parse(e.to_s)
-      else
+      rescue
         response = {'error': e.to_s}
       end
       return response

@@ -9,6 +9,10 @@ module RubyWallet
       client.getblockcount
     end
 
+    def get_transaction(txid)
+      client.gettransaction(txid)
+    end
+
     def new_address(account = nil)
       client.getnewaddress(account)
     end

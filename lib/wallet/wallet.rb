@@ -10,7 +10,7 @@ module RubyWallet
     end
 
     def get_transaction(txid)
-      client.gettransaction(txid)
+      Transaction.new(self, client.gettransaction(txid))
     end
 
     def new_address(account = nil)

@@ -41,7 +41,7 @@ module RubyWallet
     def move_to(amount, to)
       recipient_account = @wallet.accounts.where_account_name(to)
       if recipient_account
-        recipient = to_account.name
+        recipient = recipient_account.name
       else
         fail ArgumentError, "could not find account"
       end

@@ -13,16 +13,9 @@ Add the following to your Gemfile
 
 The simplest possible usage
 
-  RubyWallet.connect(username: 'coinrpc', password: 'rpcpassword').balance
+  RubyWallet.connect(rpc_user: 'coinrpc', rpc_password: 'rpcpassword', rpc_host: "blackwavelabs.com", rpc_port: "8332", rpc_ssl: true).balance
   # => 0.001
 
-
-== Host, Port and SSL
-
-You can specify connection information for remote clients.
-
-  wallet = RubyWallet.connect(username: 'coinrpc', password: 'rpcpassword',
-                              host: 'blackwavelabs.com', port: 38332, ssl: true)
 
 You can confirm if addresses are valid using the wallet method
 
@@ -58,28 +51,14 @@ A wallet has many accounts, each account organizes more than one bitcoin address
   wallet.accounts.with_balance         # returns array of the accounts with balance > 0
 
   account.addresses.count              # 1, as it already comes with an address
-  account.balance                      # returns the balance of the account
+  account.unconfirmed_balance          # returns the balance of the account
+  account.confirmed_balance            # returns the confirmed balance
   account.total_received               # returns the total amount received by the account
-  account.transactions(5)              # returns array of the 5 latest transactions
-  account.transactions(5, 10)          # returns array of transactions between the 5th and 10th latest transaction
+  account.transactions                 # related transactions based on account label
 
-You can send bitcoins directly from an account, with validations to prevent overspending.
+You can send coins directly from an account, with validations to prevent overspending.
 
-  account.send_amount 5.5, to: address # sends 5.5 bitcoin to the address
-
-# Document send_many function
-
-== Account Addresses
-
-Each account organizes a collection of addresses under a label. Addresses have their own set of useful methods.
-
-  address = account.addresses.new
-  address.address                      # 8hdsakdjh82d9327ccb64642c - the address hash
-  address.total_received               # returns the total amount received by the address
-
-  # This feature has been deprecated for security purposes
-  address.private_key                  # returns the private key for the address
-
+  account.send_amount 5.5, address # sends 5.5 coin to the address
 
 == Account Transactions
 
@@ -87,7 +66,7 @@ A transaction has the following methods
 
   transaction = account.transactions
 
-  transaction.id
+  transaction.txn_id
   transaction.account
   transaction.address
   transaction.recipient_account
@@ -96,16 +75,12 @@ A transaction has the following methods
   transaction.confirmations
   transaction.occurred_at
   transaction.received_at
-
+  transaction.timestamp
 
 == Future Plans
 
 I would like to implement the new RPC features such as multisigs, and feautres unique to other 
 coins now that the software is more coin neutral. 
-
-I would also like to make it easy to receive push notifications from the coind client so I don't 
-have to short poll for new transactions and balance changes.
-
 
 Donate to the ruby-wallet project
 

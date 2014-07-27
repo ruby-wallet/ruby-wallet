@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Bitcoin::Client do
-  subject { Bitcoin::Client.new($user, $pass) }
+describe Cond::Client do
+  subject { Coind::Client.new($user, $pass) }
 
   it "defaults" do
     subject.user.should == $user

@@ -1,5 +1,5 @@
 module RubyWallet
-  class Transaction
+  class Transfer
     include Mongoid::Document
 
     field :transfer_id,    type: String

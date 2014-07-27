@@ -9,10 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["oGminor@gmail.com"]
   s.homepage    = "http://github.com/ruby-wallet/ruby-wallet"
   s.summary     = %q{A Ruby wrapper to any Bitcoin based crypto currency JSON-RPC API.}
-  s.description = "Provides a Ruby wrapper to any Bitcoin based cryptocurrency "+
-                  "JSON-RPC API. Implements all methods listed at "+
-                  "https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_Calls_list and "+
-                  "lets you set options such as the host and port number, and whether to use SSL."
+  s.description = "Provides a Ruby wrapper to any Bitcoin coind client."
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

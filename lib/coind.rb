@@ -18,32 +18,28 @@ module Coind
   end
 end
 
-
 module RubyWallet
   require 'mongoid'
-  Mongoid.load!('../mongoid.yml', :production)
 
-  require 'ostruct'
-  require 'active_support/core_ext/module/attribute_accessors'
-  require 'active_support/core_ext/hash/indifferent_access'
-  require 'active_support/core_ext/string'
+  Mongoid.load!(File.expand_path("../../mongoid.yml", __FILE__), :production)
 
   require 'wallet/wallet'
   require 'wallet/account'
-  require 'wallet/accounts'
-  require 'wallet/address'
   require 'wallet/transaction'
-  require 'wallet/errors'
+  require 'wallet/transfer'
 
-
-  mattr_accessor :config
-  @@config = OpenStruct.new
-
-  def self.connect(*args)
-    Wallet.new(*args)
-  end
-
-  def self.initialize(*args)
-    Wallet.new(*args)
+  def self.connect(ruby_wallet)
+    wallet = Wallet.find_by(rpc_user: ruby_wallet[:rpc_user])
+    if wallet
+      wallet
+    else
+      p ruby_wallet
+      p ruby_wallet[:rpc_user]
+      Wallet.create(rpc_user: ruby_wallet[:rpc_user],
+                    rpc_password: ruby_wallet[:rpc_password],
+                    rpc_host: ruby_wallet[:rpc_host],
+                    rpc_port: ruby_wallet[:rpc_port],
+                    rpc_ssl:  ruby_wallet[:rpc_ssl])
+    end
   end
 end

@@ -1,6 +1,12 @@
 module RubyWallet
   class Wallet
-    include Mongoid::Document
+    include ::Mongoid::Document
+
+    field :rpc_user,               type: String
+    field :rpc_password,           type: String
+    field :rpc_host,               type: String
+    field :rpc_port,               type: Integer
+    field :rpc_ssl,                type: Boolean
 
     field :total_balance,          type: BigDecimal
 
@@ -10,10 +16,6 @@ module RubyWallet
     embeds_many :accounts
     embeds_many :transactions
     embeds_many :transfers
-
-    def initialize(config={})
-      @config = config
-    end
 
     def create_transaction(transaction)
       self.create_transaction(account_label: transaction["account"],
@@ -95,23 +97,11 @@ module RubyWallet
 
     private
       def client
-        @client ||= Coind(@config[:username],
-                          @config[:password],
-                          :port => (@config[:port] || "8332"),
-                          :host => (@config[:host] || "localhost"),
-                          :ssl => (@config[:ssl] || false))
-      end
-
-      def parse_error(response)
-        json_response = JSON.parse(response)
-        hash = json_response.with_indifferent_access
-        error = if hash[:error]
-                  case hash[:error][:code]
-                  when -6
-                    InsufficientFunds.new("cannot send an amount more than what this account (#{@name}) has")
-                  end
-                end
-        fail error if error
+        @client ||= Coind(self.rpc_user,
+                          self.rpc_password,
+                          :port => self.rpc_port,
+                          :host => self.rpc_host,
+                          :ssl => self.rpc_ssl)
       end
 
   end

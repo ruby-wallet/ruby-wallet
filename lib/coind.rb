@@ -12,13 +12,17 @@ module Coind
     base.send(:include, Coin::DSL)
     base.send(:extend,  Coin::DSL)
   end
+
+  def Coind(user, pass, options = {})
+    ::Coind::Client.new(user, pass, options)
+  end
 end
 
-def Coind(user, pass, options = {})
-  ::Coind::Client.new(user, pass, options)
-end
 
 module RubyWallet
+  require 'mongoid'
+  Mongoid.load!('../mongoid.yml', :production)
+
   require 'ostruct'
   require 'active_support/core_ext/module/attribute_accessors'
   require 'active_support/core_ext/hash/indifferent_access'
@@ -30,6 +34,7 @@ module RubyWallet
   require 'wallet/address'
   require 'wallet/transaction'
   require 'wallet/errors'
+
 
   mattr_accessor :config
   @@config = OpenStruct.new

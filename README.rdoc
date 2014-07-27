@@ -1,8 +1,6 @@
 = Ruby-Wallet
 
-Ruby-Wallet provides complete access to any of the Bitcoin based coind JSON-RPC API. Ruby-Wallet 
-organizes the features within a secure wallet abstraction, giving safe access to the the wallet and accounting system from Ruby. 
-
+Ruby-Wallet provides abstracted access to any Bitcoin based coind JSON-RPC API. Ruby-Wallet organizes all the necessary features within a secure wallet abstraction, and utilizes its own account management system built using MongoDB. The built-in account management system has many flaws and will be removed in later versions of Bitcoin. Utilizing MongoDB to handle internal account transactions and balance management allows for live backups via replication to offsite MongoDB instances, fast and robust queries for wallet information and keeps the wallet.dat file small and minimal.
 
 == Installation
 
@@ -15,7 +13,7 @@ Add the following to your Gemfile
 
 The simplest possible usage
 
-  RubyWallet.connect(:username => 'username', :password => 'password').balance
+  RubyWallet.connect(username: 'coinrpc', password: 'rpcpassword').balance
   # => 0.001
 
 
@@ -23,8 +21,8 @@ The simplest possible usage
 
 You can specify connection information for remote clients.
 
-  wallet = RubyWallet.connect(:username => 'username', :password => 'password',
-                              :host => 'example.com', :port => 38332, :ssl => true)
+  wallet = RubyWallet.connect(username: 'coinrpc', password: 'rpcpassword',
+                              host: 'blackwavelabs.com', port: 38332, ssl: true)
 
 You can confirm if addresses are valid using the wallet method
 

@@ -1,65 +1,49 @@
 module RubyWallet
   class Account
+    include Mongoid::Document
 
-    attr_reader :wallet, :name
+    field :account_id,           type: String
+    field :account_label,        type: String
 
-    def initialize(wallet, name)
-      @wallet = wallet
-      @name = name
+    field :addresses,            type: Array
+
+    field :unconfirmed_balance,  type: BigDecimal
+    field :confirmed_balance,    type: BigDecimal
+    field :total_received,       type: BigDecimal
+
+    embedded_in :wallet
+
+    def deposits
+      transactions.where(category: "deposit")
+    end
+
+    def withdrawals
+      transactions.where(category: "withdrawal")
     end
 
     def generate_new_address
       Address.new(self)
+      # Add address to array
     end
 
-    def addresses
-      @addresses ||= @wallet.addresses_by_account(name)
+    def send_to_address(amount, address)
+      # 1. Confirm amount
+      # 2. Confirm address is legit
+      # 3. Send money
     end
 
-    def balance(min_conf = 0)
-      @wallet.balance(@name, min_conf)
+    def transfer_to(amount, recipient)
+      # 1. Confirm amount
+      # 2. Confirm recipient is real
+      # 3. Send money within internal database and create two transfers (double book keeping, -x amount from sender account +x amount to recipient account)
     end
 
-    def send_amount(amount, recipient)
-      # Could do a regex check here
-      unless recipient
-        fail ArgumentError, 'address must be specified'
-      end
-      @wallet.send_from_to(@name, recipient, amount)
-    end
+    protected
 
-    def send_from_to_many(account={})
-      addresses = {}
-      accounts.each do |key, value|
-        address = key.respond_to?(:address) ? key.address : key
-        addresses[address] = value
+      def populate_transactions(from = 0, to)
+        #@wallet.transactions(@name, to, from)
       end
 
-      @wallet.send_many(@name, addresses_values)
-    end
 
-    def move_to(amount, to)
-      recipient_account = @wallet.accounts.where_account_name(to)
-      if recipient_account
-        recipient = recipient_account.name
-      else
-        fail ArgumentError, "could not find account"
-      end
-      if self.balance >= amount
-        @wallet.transfer(@name, recipient, amount)
-      end
-    end
-
-    def total_received
-      @wallet.received_by_account(@name)
-    end
-
-    def ==(other_account)
-      @name == other_account.name
-    end
-
-    def transactions(from = 0, to)
-      @wallet.transactions(@name, to, from)
-    end
   end
 end

@@ -1,28 +1,24 @@
 module RubyWallet
   class Transaction
+    include Mongoid::Document
+    
+    field :transaction_id,        type: String
+    field :account_id,            type: String
 
-    attr_reader(:account,
-                :address,
-                :recipient_account,
-                :amount,
-                :category,
-                :confirmations,
-                :id,
-                :occurred_at,
-                :received_at)
+    field :category,              type: String
 
-    def initialize(wallet, args)
-      @wallet = wallet
-      @account = args["account"] if args["account"] 
-      @id = args["txid"] if args["txid"]
-      @address = args["address"]
-      @recipient_account = args["otheraccount"] if args["otheraccount"]
-      @amount = args["amount"]
-      @confirmations = args["confirmations"] if args["confirmations"]
-      @occurred_at = Time.at(args["time"]) if args["time"]
-      @received_at = Time.at(args["timereceived"]) if args["timereceived"]
-      @category = args["category"]
-    end
+    field :address,               type: String
+    field :recipient_account,     type: String   
+
+    field :amount,                type: BigDecimal
+
+    field :confirmations,         type: Integer
+
+    field :timestamp,             type: Time
+
+    embedded_in :wallet
+
+    validates_uniqueness_of :transaction_id
 
   end
 end

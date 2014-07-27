@@ -1,24 +1,41 @@
 module RubyWallet
   class Wallet
+    include Mongoid::Document
+
+    field :total_balance,          type: BigDecimal
+
+    field :transfer_count,         type: Integer
+    field :transaction_count,      type: Integer
+
+    embeds_many :accounts
+    embeds_many :transactions
+    embeds_many :transfers
 
     def initialize(config={})
       @config = config
     end
-    
-    def block_count
-      lient.getblockcount
+
+    def create_transaction(transaction)
+      self.create_transaction(account_label: transaction["account"],
+                              transaction_id: transaction["txid"],
+                              address: transaction["address"],
+                              recipient_account: transaction["otheraccount"],
+                              amount: BigDecimal.new(transaction["amount"]),
+                              confirmations: transaction["confirmations"].to_i,
+                              occurred_at: Time.at(transaction["time"]),
+                              received_at: Time.at(transaction["timereceived"]),
+                              category: transaction["category"]
+                             )
     end
-   
-    def get_transaction(txid)
+
+
+    
+    def fetch_transaction(txid)
       Transaction.new(self, client.gettransaction(txid))
     end
 
-    def new_address(account = nil)
-      client.getnewaddress(account)
-    end
-
-    def addresses_by_account(name)
-      client.getaddressesbyaccount(name)
+    def new_address(account_label = nil)
+      client.getnewaddress(account_label)
     end
 
     def send_from_to(from, to, amount, min_conf = RubyWallet.config.min_conf)
@@ -38,9 +55,6 @@ module RubyWallet
         end
     end
  
-    # Coind clients have no error handling for move command
-    # You are capable of sending more than the wallet has leaving the account negative
-    # So we add error handling at this level of abstraction to make accounts safer 
     def transfer(from, to, amount, min_conf = RubyWallet.config.min_conf)
       if self.balance(from, min_conf) >= amount and self.balance >= amount
         client.move(from, to, amount, min_conf)
@@ -49,31 +63,11 @@ module RubyWallet
       end
     end
     
-    def received_by_account(account, min_conf = RubyWallet.config.min_conf)
-      client.getreceivedbyaccount(account, min_conf)
-    end
-  
-    def received_by_address(address, min_conf = RubyWallet.config.min_conf)  
-      client.getreceivedbyaddress(address, min_conf)
-    end
-   
-    def balance(account = nil, min_conf = 0)
-      client.balance(account, min_conf)
+    def total_balance(min_confirmations = 0)
+      client.balance(nil, min_confirmations)
     end
 
-    def total_received(account = "*", min_conf = 0)
-      client.getreceivedbyaccount(account, min_conf)
-    end
-
-    def list_accounts
-      client.listaccounts
-    end
-
-    def accounts
-      @accounts ||= Accounts.new(self)
-    end
-
-    def transactions(account = "*", from = 0, to)
+    def populate_transactions(account = "*", from = 0, to)
       client.listtransactions(account, to, from).map do |hash|
         Transaction.new(self, hash)
       end

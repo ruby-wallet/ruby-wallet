@@ -9,15 +9,6 @@ module RubyWallet
       lient.getblockcount
     end
    
-    def block_number
-      client.getblocknumber
-   end
-    
-    # Apparently getblocknumber is a hash
-    def blockchain_up_to_date?
-      #(client.getblockcount < client.getblocknumber)
-    end
-
     def get_transaction(txid)
       Transaction.new(self, client.gettransaction(txid))
     end
@@ -47,8 +38,15 @@ module RubyWallet
         end
     end
  
+    # Coind clients have no error handling for move command
+    # You are capable of sending more than the wallet has leaving the account negative
+    # So we add error handling at this level of abstraction to make accounts safer 
     def transfer(from, to, amount, min_conf = RubyWallet.config.min_conf)
-      client.move(from, to, amount, min_conf)
+      if self.balance(from, min_conf) >= amount
+        client.move(from, to, amount, min_conf)
+      else
+        return false
+      end
     end
     
     def received_by_account(account, min_conf = RubyWallet.config.min_conf)

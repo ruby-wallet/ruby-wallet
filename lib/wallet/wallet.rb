@@ -5,8 +5,17 @@ module RubyWallet
       @config = config
     end
     
+    def block_count
+      lient.getblockcount
+    end
+   
+    def block_number
+      client.getblocknumber
+   end
+    
+    # Apparently getblocknumber is a hash
     def blockchain_up_to_date?
-      (client.getblockcount < client.getblocknumber)
+      #(client.getblockcount < client.getblocknumber)
     end
 
     def get_transaction(txid)

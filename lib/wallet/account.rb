@@ -45,7 +45,9 @@ module RubyWallet
       else
         fail ArgumentError, "could not find account"
       end
-      @wallet.transfer(@name, recipient, amount)
+      if self.balance >= amount
+        @wallet.transfer(@name, recipient, amount)
+      end
     end
 
     def total_received

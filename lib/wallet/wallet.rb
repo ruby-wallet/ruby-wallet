@@ -42,7 +42,7 @@ module RubyWallet
     # You are capable of sending more than the wallet has leaving the account negative
     # So we add error handling at this level of abstraction to make accounts safer 
     def transfer(from, to, amount, min_conf = RubyWallet.config.min_conf)
-      if self.balance(from, min_conf) >= amount
+      if self.balance(from, min_conf) >= amount and self.balance >= amount
         client.move(from, to, amount, min_conf)
       else
         return false

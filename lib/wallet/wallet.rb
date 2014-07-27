@@ -48,7 +48,7 @@ module RubyWallet
     end
  
     def transfer(from, to, amount, min_conf = RubyWallet.config.min_conf)
-      client.(from, to, amount, min_conf)
+      client.move(from, to, amount, min_conf)
     end
     
     def received_by_account(account, min_conf = RubyWallet.config.min_conf)

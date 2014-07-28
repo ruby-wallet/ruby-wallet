@@ -17,8 +17,6 @@ class Coind::RPC
 
   def dispatch(request)
     begin
-      p service_url
-      p request.to_post_data
       respdata = RestClient.post service_url, request.to_post_data
       response = JSON.parse(respdata)
       return response['result']

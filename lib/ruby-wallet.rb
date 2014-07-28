@@ -36,17 +36,18 @@ module RubyWallet
   require 'wallet/transfer'
 
   def self.connect(iso_code)
-    Wallet.all.destroy
     wallet = Wallet.find_by(iso_code: iso_code)
     if wallet
       wallet
-    else
+    elsif  Coin.config(iso_code, @config[:ENV])
       Wallet.create(rpc_user:        Coin.config(iso_code, @config[:ENV])[:rpc_user],
                     rpc_password:    Coin.config(iso_code, @config[:ENV])[:rpc_password],
                     rpc_host:        Coin.config(iso_code, @config[:ENV])[:rpc_host],
                     rpc_port:        Coin.config(iso_code, @config[:ENV])[:rpc_port],
                     rpc_ssl:         Coin.config(iso_code, @config[:ENV])[:rpc_ssl],
                     wallet_password: Coin.config(iso_code, @config[:ENV])[:wallet_password])
+    else
+      return {'error' => 'No configuration found for specified iso code.'}
     end
   end
 end

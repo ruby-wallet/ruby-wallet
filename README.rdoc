@@ -78,10 +78,10 @@ A transaction has the following methods
 
 == Future Plans
 
-I would like to implement the new RPC features such as multisigs, and feautres unique to other 
-coins now that the software is more coin neutral. 
+I would like to implement the new RPC features such as multisigs, and increase the test coverage.
 
-Donate to the ruby-wallet project
 
+Donate to the ruby-wallet project:
 1LJtuko15Ck1gq5H9K24iGnA1yvtcBMYa4
+
 

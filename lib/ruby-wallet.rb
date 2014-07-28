@@ -20,12 +20,12 @@ module Coin
 end
 
 module RubyWallet
-  config = YAML::load_file(File.expand_path('../../config/config.yml', __FILE__))
+  @config = YAML::load_file(File.expand_path('../../config/config.yml', __FILE__))
 
   require 'mongoid'
   require 'mongoid/encrypted_string/global'
 
-  Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), config['ENV'].to_sym)
+  Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), @config['ENV'].to_sym)
   Mongoid::EncryptedString.config.key = config['ENCRYPTION_KEY']
 
   Coin.set(YAML::load_file(File.expand_path("../../config/coins.yml", __FILE__)).symbolize_keys)
@@ -40,11 +40,12 @@ module RubyWallet
     if wallet
       wallet
     else
-      Wallet.create(rpc_user:     Coin.config(iso_code, config['ENV'].to_sym)[:rpc_user],
-                    rpc_password: Coin.config(iso_code, config['ENV'].to_sym)[:rpc_password],
-                    rpc_host:     Coin.config(iso_code, config['ENV'].to_sym)[:rpc_host],
-                    rpc_port:     Coin.config(iso_code, config['ENV'].to_sym)[:rpc_port],
-                    rpc_ssl:      Coin.config(iso_code, config['ENV'].to_sym)[:rpc_ssl])
+      Wallet.create(rpc_user:        Coin.config(iso_code, @config['ENV'].to_sym)[:rpc_user],
+                    rpc_password:    Coin.config(iso_code, @config['ENV'].to_sym)[:rpc_password],
+                    rpc_host:        Coin.config(iso_code, @config['ENV'].to_sym)[:rpc_host],
+                    rpc_port:        Coin.config(iso_code, @config['ENV'].to_sym)[:rpc_port],
+                    rpc_ssl:         Coin.config(iso_code, @config['ENV'].to_sym)[:rpc_ssl],
+                    wallet_password: Coin.config(iso_code, @config['ENV'].to_sym)[:wallet_password])
     end
   end
 end

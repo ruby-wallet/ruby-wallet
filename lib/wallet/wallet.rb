@@ -11,7 +11,7 @@ module RubyWallet
     field :rpc_port,               type: Integer
     field :rpc_ssl,                type: Boolean
 
-    field :wallet_key,             type: String
+    field :wallet_password,        type: Mongoid::EncryptedString
 
     field :total_balance,          type: BigDecimal
 

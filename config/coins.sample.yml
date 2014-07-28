@@ -1,5 +1,23 @@
 # Store application setting variables and sensitive information here.
-# Rename this file to "config.yml" and make sure it's  listed in your
+# Rename this file to "coins.yml" and make sure it's listed in your
 # .gitignore for safety.
 
-ENCRYPTION_KEY: "secret"
+BLK:
+   development: &base
+      rpc_user: "blackcoinrpc"
+      rpc_password: "rpc_password"
+      rpc_host: "localhost"
+      rpc_port: "15715"
+      rpc_ssl: false
+      wallet_password: "abc!"
+
+   test:
+     <<: *base
+
+   production:
+      rpc_user: "blackcoinrpc"
+      rpc_password: "rpc_password"
+      rpc_host: "localhost"
+      rpc_port: "15715"
+      rpc_ssl: false
+      wallet_password: "abc!"

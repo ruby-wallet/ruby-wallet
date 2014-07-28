@@ -22,9 +22,9 @@ Compile the gem and install it locally
   gem build ruby-wallet.gemspec
   gem install ruby-wallet
 
-Alternatively you can specify the local folder in your Gemfile
+Alternatively you can specify the local folder, as in your vendor folder in Rails, in your Gemfile
 
-  gem 'ruby-wallet', path: '/home/usr/ruby-wallet'
+  gem 'ruby-wallet', path: 'vendor/ruby-wallet'
 
 == Usage
 

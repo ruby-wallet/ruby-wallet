@@ -1,24 +1,23 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "coind/version"
+require "version"
 
 Gem::Specification.new do |s|
   s.name        = "ruby-wallet"
-  s.version     = Coind::VERSION
-  s.authors     = ["oGminor"]
-  s.email       = ["oGminor@gmail.com"]
+  s.version     = RubyWallet::VERSION
+  s.authors     = ["oGminor", "drunkonsound"]
+  s.email       = ["admin@blackwavelabs.com"]
   s.homepage    = "http://github.com/ruby-wallet/ruby-wallet"
-  s.summary     = %q{A Ruby wrapper to any Bitcoin based crypto currency JSON-RPC API.}
-  s.description = "Provides a Ruby wrapper to any Bitcoin coind client."
+  s.summary     = %q{A Ruby API wrapper and account manager abstraction for any Bitcoin based crypto currency.}
+  s.description = "Provides a Ruby API wrapper and account manager to any Bitcoin based coind client."
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_development_dependency "rake",    '~> 0.8.7'
-  s.add_development_dependency "bundler", '~> 1.0.18'
-  s.add_development_dependency "rspec",   '~> 2.6.0'
-  s.add_development_dependency "fakeweb", '~> 1.3.0'
-  s.add_runtime_dependency "rest-client", '~> 1.6.3'
+  s.add_development_dependency "rake"
+  s.add_development_dependency "bundler"
+  s.add_development_dependency "rspec"
+  s.add_runtime_dependency "rest-client"
 end

@@ -27,7 +27,7 @@ class Coind::RPC
     begin
       respdata = RestClient.post service_url, request.to_post_data
       response = JSON.parse(respdata)
-      raise Coin::Errors::RPCError, response['error'] if response['error']
+      raise Coind::Errors::RPCError, response['error'] if response['error']
       return response['result']
     rescue => e
       begin

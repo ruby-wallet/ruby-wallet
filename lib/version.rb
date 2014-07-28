@@ -1,4 +1,4 @@
-module Coind
+module RubyWallet
   module Version
     MAJOR = 0
     MINOR = 3

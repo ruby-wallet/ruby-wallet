@@ -4,8 +4,8 @@ module RubyWallet
     include Coind
 
     field :rpc_user,               type: String
-    field :rpc_password,           type: String
-    field :rpc_host,               type: String
+    field :rpc_password,           type: String    #Mongoid::EncryptedString
+    field :rpc_hosts,              type: String
     field :rpc_port,               type: Integer
     field :rpc_ssl,                type: Boolean
 

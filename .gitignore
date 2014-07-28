@@ -1,3 +1,5 @@
+coins.yml
+config.yml
 mongoid.yml
 *.swo
 *.swp

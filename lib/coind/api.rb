@@ -1,24 +1,11 @@
 class Coind::API
-  attr_reader :options
-  attr_reader :params
-
-  def user; options[:user]; end
-  def pass; options[:pass]; end
-  def host; options[:host]; end
-  def port; options[:port]; end
-  def ssl;  options[:ssl];  end
-  def ssl?; options[:ssl];  end
-  def user=(a); options[:user] = a; end
-  def pass=(a); options[:pass] = a; end
-  def host=(a); options[:host] = a; end
-  def port=(a); options[:port] = a; end
-  def ssl=(a);  options[:ssl]  = a; end
 
   def initialize(options)
     @options = {
-      :rpc_host => 'localhost',
-      :rpc_port => 8332,
-      :rpc_ssl  => false
+      :rpc_user => options[:rpc_user],
+      :rpc_host => options[:rpc_host],
+      :rpc_port => options['rpc_port'],
+      :rpc_ssl  => options['rpc_ssl']
     }
   end
 

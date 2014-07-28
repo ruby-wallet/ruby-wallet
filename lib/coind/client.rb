@@ -48,7 +48,22 @@ class Coind::Client
     @api.request 'getnewaddress', label
   end
 
-  # Returns the total amount received by addresses with +account+ in transactions
+  # Returns Object that has label names as keys, label balances (inaccurate) as values.
+  def listlabels(minconf = 1)
+    @api.request 'listaccounts', minconf
+  end
+
+  # Returns the current coin address for receiving payments to this +label+.
+  def getlabeladdress(label)
+    @api.request 'getaccountaddress', label
+  end
+
+  # Returns the list of addresses for the given +label+.
+  def getaddressesbylabel(label)
+    @api.request 'getaddressesbyaccount', label
+  end
+
+  # Returns the total amount received by addresses with +label+ in transactions
   # with at least +minconf+ confirmations.
   def getreceivedbylabel(label, minconf = 1)
     @api.request 'getreceivedbyaccount', label, minconf
@@ -66,8 +81,8 @@ class Coind::Client
 
   # Returns an array of objects containing:
   #
-  #   :account       => the account of the receiving addresses
-  #   :amount        => total amount received by addresses with this account
+  #   :account       => the label of the receiving addresses
+  #   :amount        => total amount received by addresses with this label
   #   :confirmations => number of confirmations of the most recent transaction included
   #
   def listreceivedbylabel(minconf = 1, includeempty = false)
@@ -77,7 +92,7 @@ class Coind::Client
   # Returns an array of objects containing:
   #
   #   :address       => receiving address
-  #   :account       => the account of the receiving address
+  #   :account       => the label of the receiving address
   #   :amount        => total amount received by the address
   #   :confirmations => number of confirmations of the most recent transaction included
   #
@@ -86,9 +101,9 @@ class Coind::Client
     @api.request 'listreceivedbyaddress', minconf, includeempty
   end
 
-  # Returns up to +count+ most recent transactions for label +label+.
+  # Returns up to +count+ most recent transactions for +label+.
   def listtransactions(label = "*", count = 10, from = 0)
-    @api.request 'listtransactions', account, count, from
+    @api.request 'listtransactions', label, count, from
   end
 
   # +amount+ is a real and is rounded to 8 decimal places
@@ -191,7 +206,8 @@ class Coind::Client
   alias list_received_by_address listreceivedbyaddress
   alias transactions listtransactions
   alias list_transactions listtransactions
-  alias label setlabel
+  alias label= setlabel
+  alias set_label setlabel
   alias validate_address validateaddress
   alias sign_message signmessage
   alias verify_message verifymessage

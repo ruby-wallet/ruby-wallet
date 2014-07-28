@@ -3,17 +3,18 @@ module Coind
   require 'coind/api'
   require 'coind/request'
   require 'coind/rpc'
-  require 'coind/dsl'
   
-  def Coind(user, pass, options = {})
-    ::Coind::Client.new(user, pass, options)
+  def Coind(options)
+    Coind::Client.new(options)
   end
 end
 
 module RubyWallet
   require 'mongoid'
-
-  Mongoid.load!(File.expand_path("../../mongoid.yml", __FILE__), :production)
+  require 'mongoid/encrypted_string/global'
+  config = YAML::load_file(File.expand_path('../../config/config.yml', __FILE__))
+  Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), :production)
+  Mongoid::EncryptedString.config.key = config['ENCRYPTION_KEY']
 
   require 'wallet/wallet'
   require 'wallet/account'

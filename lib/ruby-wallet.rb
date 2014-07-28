@@ -28,7 +28,6 @@ module RubyWallet
   Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), config['ENV'].to_sym)
   Mongoid::EncryptedString.config.key = config['ENCRYPTION_KEY']
 
-  require 'coin'
   Coin.set(YAML.load_file("../../config/coins.yml").symbolize_keys)
 
   require 'wallet/wallet'

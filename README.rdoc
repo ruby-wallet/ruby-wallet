@@ -1,13 +1,12 @@
 = Ruby-Wallet
 
-Ruby-Wallet provides abstracted access to any Bitcoin based coind JSON-RPC API. Ruby-Wallet organizes all the necessary features within a secure wallet abstraction, and utilizes its own account management system built using MongoDB. The built-in account management system has many flaws and will be removed in later versions of Bitcoin (https://github.com/bitcoin/bitcoin/issues/3816). Utilizing MongoDB to handle internal account transactions and balance management allows for live backups via replication to offsite MongoDB instances, fast and robust queries for wallet information and keeps the wallet.dat file small and minimal.
+Ruby-Wallet provides abstracted access to any Bitcoin based coind JSON-RPC API. Ruby-Wallet organizes all the necessary features within a secure wallet abstraction, and utilizes its own account management system built using MongoDB. 
+
+The built-in account management system has many flaws and will be removed in later versions of Bitcoin (https://github.com/bitcoin/bitcoin/issues/3816). Utilizing MongoDB to handle internal account transactions and balance management allows for live backups via replication to offsite MongoDB instances, fast/robust queries for wallet information and keeps the wallet.dat file small and minimal.
 
 == Installation
 
-Add the following to your Gemfile
-
-  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "ruby-wallet"
-
+You will need to clone the repo, copy the sample config files to make config files. Then compile the gem and install it locally.
 
 == Usage
 

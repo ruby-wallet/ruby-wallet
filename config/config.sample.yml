@@ -1,0 +1,5 @@
+# Store application setting variables and sensitive information here.
+# Rename this file to "settings.yml" and make sure it's  listed in your
+# .gitignore for safety.
+
+ENCRYPTION_KEY: "aIlU9GzQgn9lpeucy7rj1EduwzQgn9GzQgn9lpeucy7rj1EwR11duw"

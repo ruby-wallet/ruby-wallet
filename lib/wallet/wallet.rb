@@ -3,11 +3,15 @@ module RubyWallet
     include Mongoid::Document
     include Coind
 
+    field :iso_code,               type: String
+
     field :rpc_user,               type: String
-    field :rpc_password,           type: String    #Mongoid::EncryptedString
+    field :rpc_password,           type: Mongoid::EncryptedString
     field :rpc_host,               type: String
     field :rpc_port,               type: Integer
     field :rpc_ssl,                type: Boolean
+
+    field :wallet_key,             type: String
 
     field :total_balance,          type: BigDecimal
 
@@ -17,6 +21,9 @@ module RubyWallet
     embeds_many :accounts
     embeds_many :transactions
     embeds_many :transfers
+
+    validates_uniqueness_of :iso_code
+
 
     def create_transaction(transaction)
       self.create_transaction(account_label: transaction["account"],
@@ -92,17 +99,35 @@ module RubyWallet
       client.lock
     end
 
-    def validate_address(coinaddress)
-      client.validateaddress(coinaddress)
+    def own_address?(address)
+      if response["ismine"]
+        return response["ismine"]
+      else
+        return response["error"]
+      end
+    end
+
+    def valid_address?(address)
+      response = validate_address(address)
+      if response["isvalid"]
+        return response["isvalid"]
+      else
+        return response["error"]
+      end
     end
 
     private
+
       def client
         @client ||= Coind({:rpc_user =>     self.rpc_user,
                            :rpc_password => self.rpc_password,
                            :rpc_host =>     self.rpc_host,
                            :rpc_port =>     self.rpc_port,
                            :rpc_ssl =>      self.rpc_ssl})
+      end
+
+      def validate_address(address)
+        client.validateaddress(address)
       end
 
   end

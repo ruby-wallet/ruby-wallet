@@ -6,7 +6,25 @@ The built-in account management system has many flaws and will be removed in lat
 
 == Installation
 
-You will need to clone the repo, copy the sample config files to make config files. Then compile the gem and install it locally.
+Clone the repository, copy the sample config files to make config files. Compile the gem and install it locally, or specify the folder in your Gemfile.
+
+  clone https://github.com/ruby-wallet/ruby-wallet
+
+Copy and configure the gem database, encryption key for passwords, and coin(s) to manage to your setup
+
+  cd ruby-wallet/config
+  cp mongoid.sample.yml mongoid.yml
+  cp config.sample.yml config.yml
+  cp coins.sample.yml coins.yml
+
+Compile the gem and install it locally
+
+  gem build ruby-wallet.gemspec
+  gem install ruby-wallet
+
+Alternatively you can specify the local folder in your Gemfile
+
+  gem 'ruby-wallet', path: '/home/usr/ruby-wallet'
 
 == Usage
 
@@ -16,9 +34,14 @@ The simplest possible usage
   # => 0.001
 
 
-You can confirm if addresses are valid using the wallet method
+Confirm if addresses are valid using the wallet method
 
-  wallet.validate_address(address)
+  wallet.valid_address?(address)
+  # => true
+
+Y
+
+  wallet.own_address
 
 You can view the recent transactions of the entire wallet, or just a specific range.
 

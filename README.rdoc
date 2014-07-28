@@ -6,7 +6,7 @@ Ruby-Wallet provides abstracted access to any Bitcoin based coind JSON-RPC API. 
 
 Add the following to your Gemfile
 
-  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "coind"
+  gem "ruby-wallet", :git => "https://github.com/ruby-wallet/ruby-wallet.git", require: "ruby-wallet"
 
 
 == Usage

@@ -1,6 +1,7 @@
 module RubyWallet
   class Wallet
-    include ::Mongoid::Document
+    include Mongoid::Document
+    include Coind
 
     field :rpc_user,               type: String
     field :rpc_password,           type: String
@@ -97,11 +98,11 @@ module RubyWallet
 
     private
       def client
-        @client ||= Coind(self.rpc_user,
-                          self.rpc_password,
-                          :port => self.rpc_port,
-                          :host => self.rpc_host,
-                          :ssl => self.rpc_ssl)
+        @client ||= Coind({:rpc_user =>     self.rpc_user,
+                           :rpc_password => self.rpc_password,
+                           :rpc_host =>     self.rpc_host,
+                           :rpc_port =>     self.rpc_port,
+                           :rpc_ssl =>      self.rpc_ssl})
       end
 
   end

@@ -2,9 +2,9 @@ require 'rest_client'
 
 class Coind::RPC
   def initialize(options)
-    @user, @pass = options[:user], options[:pass]
-    @host, @port = options[:host], options[:port]
-    @ssl = options[:ssl]
+    @user, @pass = options[:rpc_user], options[:rpc_password]
+    @host, @port = options[:rpc_host], options[:rpc_port]
+    @ssl = options[:rpc_ssl]
   end
 
   def credentials
@@ -22,18 +22,16 @@ class Coind::RPC
     url
   end
 
-  # Need to rebuild this function, it is poorly implemented
   def dispatch(request)
     begin
       respdata = RestClient.post service_url, request.to_post_data
       response = JSON.parse(respdata)
-      raise Coind::Errors::RPCError, response['error'] if response['error']
       return response['result']
-    rescue => e
+    rescue => error
       begin
-        response = JSON.parse(e.to_s)
+        response = JSON.parse(error.to_s)
       rescue
-        response = {'error' => e.to_s}
+        response = {'error' => error.to_s}
       end
       return response
     end

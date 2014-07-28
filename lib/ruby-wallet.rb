@@ -3,16 +3,8 @@ module Coind
   require 'coind/api'
   require 'coind/request'
   require 'coind/rpc'
-  require 'coind/errors'
-  require 'coind/version'
-  require 'coind/version'
   require 'coind/dsl'
   
-  def self.included(base)
-    base.send(:include, Coin::DSL)
-    base.send(:extend,  Coin::DSL)
-  end
-
   def Coind(user, pass, options = {})
     ::Coind::Client.new(user, pass, options)
   end
@@ -22,8 +14,6 @@ module RubyWallet
   require 'mongoid'
 
   Mongoid.load!(File.expand_path("../../mongoid.yml", __FILE__), :production)
-
-   
 
   require 'wallet/wallet'
   require 'wallet/account'

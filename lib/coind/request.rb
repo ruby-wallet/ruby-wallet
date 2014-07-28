@@ -7,7 +7,7 @@ class Coind::Request
     @service_name = service_name
     @params = params.dup
     
-    # coin rejects null values even for optional params. Since
+    # coind rejects null values even for optional params. Since
     # even params following those may have default non-nil values,
     # we'll assume the first non-nil value marks a set of optional
     # params, and drop it and everything following it.

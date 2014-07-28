@@ -14,12 +14,12 @@ class Coind::API
   def port=(a); options[:port] = a; end
   def ssl=(a);  options[:ssl]  = a; end
 
-  def initialize(options = {})
+  def initialize(options)
     @options = {
-      :host => 'localhost',
-      :port => 8332,
-      :ssl  => false
-    }.merge(options)
+      :rpc_host => 'localhost',
+      :rpc_port => 8332,
+      :rpc_ssl  => false
+    }
   end
 
   def to_hash

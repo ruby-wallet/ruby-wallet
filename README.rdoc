@@ -1,6 +1,6 @@
 = Ruby-Wallet
 
-Ruby-Wallet provides abstracted access to any Bitcoin based coind JSON-RPC API. Ruby-Wallet organizes all the necessary features within a secure wallet abstraction, and utilizes its own account management system built using MongoDB. 
+Ruby-Wallet provides abstracted access to any Bitcoin based coind JSON-RPC API. Ruby-Wallet organizes all the necessary features within a secure wallet abstraction, and utilizes its own double-entry bookkeeping account management system built using MongoDB. 
 
 The built-in account management system has many flaws and will be removed in later versions of Bitcoin (https://github.com/bitcoin/bitcoin/issues/3816). Utilizing MongoDB to handle internal account transactions and balance management allows for live backups via replication to offsite MongoDB instances, fast/robust queries for wallet information and keeps the wallet.dat file small and minimal.
 
@@ -49,18 +49,9 @@ View the recent transactions of the entire wallet, or specify a range.
 
 == Wallet Encryption
 
-Encrypt your wallet and unlock as needed for a specific amount of time and lock the wallet.
+Encrypting your wallet with the password supplied in the config file will enable encryption. Before every action, an unlock command will be used to unlock and automatically relock your wallet between protected actions. If your wallet is encrypted prior to setup, you must manually set the encrypted attribute to true. (Not fully implemented)
 
   wallet.encrypt
-  wallet.unlock(20)                      # 20 seconds until the wallet relock automatically
-  wallet.unlock                          # defaults to 20 seconds
-  wallet.lock
-
-Unlock can be used with a block of code to be executed once the wallet is unlocked. After the code is executed the wallet is re-locked automatically.
-
-  wallet.unlock do
-    account.send_amount(5.5, address)
-  end
 
 == Wallet Accounts
 

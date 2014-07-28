@@ -28,59 +28,59 @@ Alternatively you can specify the local folder in your Gemfile
 
 == Usage
 
-The simplest possible usage
+The simplest possible usage after configuration is complete
 
-  RubyWallet.connect(rpc_user: 'coinrpc', rpc_password: 'rpcpassword', rpc_host: "blackwavelabs.com", rpc_port: "8332", rpc_ssl: true).balance
+  RubyWallet.connect("BTC").balance
   # => 0.001
-
 
 Confirm if addresses are valid using the wallet method
 
   wallet.valid_address?(address)
   # => true
 
-Y
+Confirm address is owned by current wallet
 
-  wallet.own_address
+  wallet.own_address?(address)
 
-You can view the recent transactions of the entire wallet, or just a specific range.
+View the recent transactions of the entire wallet, or specify a range.
 
   wallet.recent_transactions(15)         # Returns 15 transactions 
   wallet.recent_transactions(15,999)     # Returns 15-999
 
 == Wallet Encryption
 
-Bitcoin now supports wallet encryption. You should encrypt your wallet and unlock as needed for a specific amount of time and lock the wallet.
+Encrypt your wallet and unlock as needed for a specific amount of time and lock the wallet.
 
-  wallet.encrypt("passphrase")
-  wallet.unlock("passphrase", 20)        # 20 seconds until the wallet relock automatically
-  wallet.unlock("passphrase")            # defaults to 20 seconds
+  wallet.encrypt
+  wallet.unlock(20)                      # 20 seconds until the wallet relock automatically
+  wallet.unlock                          # defaults to 20 seconds
   wallet.lock
 
+Unlock can be used with a block of code to be executed once the wallet is unlocked. After the code is executed the wallet is re-locked automatically.
 
-You can pass the encryption passphrase along with a block of code to be executed once the wallet is unlocked. After the code is executed the wallet is re-locked automatically.
-
-  wallet.unlock("passphrase") do
-    account.send_amount 5.5, to: address
+  wallet.unlock do
+    account.send_amount(5.5, address)
   end
-
 
 == Wallet Accounts
 
-A wallet has many accounts, each account organizes more than one bitcoin addresses in the wallet into groups by their label.
+A wallet has many accounts, each account organizes one or more bitcoin addresses in the wallet into groups by their label. Accounting is handled within ruby-wallet's own MongoDB database abstracted above the coind client.
 
-  account = wallet.accounts.new('label name')
-  wallet.accounts.with_balance         # returns array of the accounts with balance > 0
+  account = wallet.create_account('label')
 
-  account.addresses.count              # 1, as it already comes with an address
-  account.unconfirmed_balance          # returns the balance of the account
-  account.confirmed_balance            # returns the confirmed balance
-  account.total_received               # returns the total amount received by the account
-  account.transactions                 # related transactions based on account label
+ 
+
+  wallet.accounts.with_balance           # returns array of the accounts with balance > 0
+
+  account.addresses.count                # 1, as it already comes with an address
+  account.unconfirmed_balance            # returns the balance of the account
+  account.confirmed_balance              # returns the confirmed balance
+  account.total_received                 # returns the total amount received by the account
+  account.transactions                   # related transactions based on account label
 
 You can send coins directly from an account, with validations to prevent overspending.
 
-  account.send_amount 5.5, address # sends 5.5 coin to the address
+  account.send_amount(5.5, address)      # sends 5.5 coin to the address
 
 == Account Transactions
 

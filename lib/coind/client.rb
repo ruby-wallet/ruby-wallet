@@ -1,19 +1,7 @@
 class Coind::Client
-  attr_reader :api
-  def user; api.user; end
-  def pass; api.pass; end
-  def host; api.host; end
-  def port; api.port; end
-  def ssl;  api.ssl;  end
-  def ssl?; api.ssl?; end
-  def user=(a); api.user = a; end
-  def pass=(a); api.pass = a; end
-  def host=(a); api.host = a; end
-  def port=(a); api.port = a; end
-  def ssl=(a);  api.ssl  = a; end
 
   def options
-    api.options
+    @api.options
   end
 
   def initialize(options)
@@ -37,6 +25,15 @@ class Coind::Client
   # Returns the number of connections to other nodes.
   def getconnectioncount
     @api.request 'getconnectioncount'
+  end
+
+  # version 0.8 Attempts add or remove +node+ from the addnode list or try a connection to +node+ once.
+  def addnode(node, command)
+    @api.request 'addnode', node, command
+  end
+
+  def getaddednodeinfo(dns, node = nil)
+    @api.request 'getaddednodeinfo', dns, node
   end
 
   # Returns an object containing various state info.
@@ -175,6 +172,11 @@ class Coind::Client
   def signrawtransaction(hex, txinfo = nil, keys = nil)
     @api.request 'signrawtransaction', hex, txinfo, keys
   end
+  
+  # version 0.9 Returns a new coin address, for receiving change. This is for use with raw transactions, NOT normal use.
+  def getrawchangeaddress(label = nil)
+    @api.request getrawchangeaddress label
+  end
 
   def encryptwallet(passphrase)
     @api.request 'encryptwallet', passphrase
@@ -188,6 +190,8 @@ class Coind::Client
     @api.request 'walletlock'
   end
 
+  alias add_node addnode
+  alias get_add_node_info getaddednodeinfo
   alias encrypt encryptwallet
   alias unlock walletpassphrase
   alias lock walletlock

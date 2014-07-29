@@ -2,8 +2,6 @@ module RubyWallet
   class Transfer
     include Mongoid::Document
 
-    field :transfer_id,    type: String
-
     field :timestamp,      type: Time
 
     field :sender_id,      type: String

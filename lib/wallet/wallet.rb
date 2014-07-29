@@ -29,20 +29,22 @@ module RubyWallet
       self.accounts.create(label: label)
     end
 
-    def insert_transaction(transaction)
-      self.create_transaction(account_label: transaction["account"],
-                              transaction_id: transaction["txid"],
-                              address: transaction["address"],
-                              recipient_account: transaction["otheraccount"],
-                              amount: BigDecimal.new(transaction["amount"]),
-                              confirmations: transaction["confirmations"].to_i,
-                              occurred_at: Time.at(transaction["time"]),
-                              received_at: Time.at(transaction["timereceived"]),
-                              category: transaction["category"]
-                             )
+    def create_transaction(transaction)
+      self.transactions.create(account_label: transaction["account"],
+                               transaction_id: transaction["txid"],
+                               address: transaction["address"],
+                               recipient_account: transaction["otheraccount"],
+                               amount: BigDecimal.new(transaction["amount"]),
+                               confirmations: transaction["confirmations"].to_i,
+                               occurred_at: Time.at(transaction["time"]),
+                               received_at: Time.at(transaction["timereceived"]),
+                               category: transaction["category"]
+                              )
     end
 
+    def create_transfer(sender_label, recipient_label, amount, comment = nil)
 
+    end
 
     def new_address(label)
       client.getnewaddress(label)
@@ -110,8 +112,6 @@ module RubyWallet
       def update_balance
         self.update_attributes(balance: client.balance(nil, 0))
       end
-
-
 
   end
 end

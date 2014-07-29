@@ -2,7 +2,7 @@
 
 Ruby-Wallet provides abstracted access to any Bitcoin based coind JSON-RPC API. Ruby-Wallet organizes all the necessary features within a secure wallet abstraction, and utilizes its own double-entry bookkeeping account management system built using MongoDB. 
 
-The built-in account management system has many flaws and will be removed in later versions of Bitcoin (https://github.com/bitcoin/bitcoin/issues/3816). Utilizing MongoDB to handle internal account transactions and balance management allows for live backups via replication to offsite MongoDB instances, fast/robust queries for wallet information and keeps the wallet.dat file small and minimal.
+The built-in coind account management system has many flaws (balances are calculated by iterating through every transaction in the wallet, causing it to be slower as the number of transactions grow) and will be removed in later versions of Bitcoin (https://github.com/bitcoin/bitcoin/issues/3816). Utilizing MongoDB to handle internal account transactions and balance management allows for live backups via replication to offsite MongoDB instances, fast/robust queries for wallet information and keeps the wallet.dat file small and minimal.
 
 == Installation
 
@@ -42,10 +42,9 @@ Confirm address is owned by current wallet
 
   wallet.own_address?(address)
 
-View the recent transactions of the entire wallet, or specify a range.
+View the recent transactions of the entire wallet.
 
-  wallet.recent_transactions(15)         # Returns 15 transactions 
-  wallet.recent_transactions(15,999)     # Returns 15-999
+  wallet.transactions
 
 == Wallet Encryption
 
@@ -55,23 +54,29 @@ Encrypting your wallet with the password supplied in the config file will enable
 
 == Wallet Accounts
 
-A wallet has many accounts, each account organizes one or more bitcoin addresses in the wallet into groups by their label. Accounting is handled within ruby-wallet's own MongoDB database abstracted above the coind client.
+A wallet embeds many accounts, each account organizes one or more coind addresses by label. Account management is handled by ruby-wallet using a MongoDB database abstracted above the coind client.
 
-  account = wallet.create_account('label')
+  account = wallet.create_account(label)
 
- 
+  account.label                           # returns abel used within the wallet.dat file to associate addresses
+  account.addresses                       # returns an array of addresses associated with the account, new addresses are last
 
-  wallet.accounts.with_balance           # returns array of the accounts with balance > 0
+  account.total_received                  # returns the total amount received by the account
 
-  account.addresses.count                # 1, as it already comes with an address
-  account.unconfirmed_balance            # returns the balance of the account
-  account.confirmed_balance              # returns the confirmed balance
-  account.total_received                 # returns the total amount received by the account
-  account.transactions                   # related transactions based on account label
+  account.balance(minimum_confirmations)  # returns the balance of the account
 
-You can send coins directly from an account, with validations to prevent overspending.
+  account.transactions                    # returns associated deposits and withdrawals
+  account.deposits                        # returns associated deposits
+  account.withdrawals                     # returns associated withdrawals
+  account.transfers                       # returns associated transfers
 
-  account.send_amount(5.5, address)      # sends 5.5 coin to the address
+Withdraw coins from an account, with validations to prevent overspending.
+
+  account.withdraw(5.5, address)          # sends 5.5 coins to the withdrawal address
+
+Transfer coins from one account to another, with validations to prevent overspending. Transfers do not create "move" transactions in the wallet.dat.
+
+  account.transfer(5.5, recipeint_label)  # sends 5.5 coins to the recipient account
 
 == Account Transactions
 

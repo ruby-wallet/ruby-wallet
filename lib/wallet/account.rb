@@ -5,6 +5,9 @@ module RubyWallet
     field :label,                type: String
     field :addresses,            type: Array,         default: []
 
+    field :unconfirmed_balance,  type: BigDecimal,    default: 0
+    field :confirmed_balance,    type: BigDecimal,    default: 0
+
     field :total_received,       type: BigDecimal,    default: 0
 
     embedded_in :wallet
@@ -17,7 +20,7 @@ module RubyWallet
     end
 
     def transfers
-      transfers.any_of({sender_label: self.label}, {recipient_label: self.label})
+      transfers.any_of({sender_label: self.label, category: "send"}, {recipient_label: self.label, category: "receive"})
     end
 
     def transactions
@@ -40,17 +43,17 @@ module RubyWallet
       balance
     end
 
-    def withdraw(amount, address)
-      # 1. Confirm amount
-      # 2. Confirm address is legit
-      # 3. Send money
+    def withdraw(address, amount)
+      self.wallet.withdraw(self, address, amount)
     end
 
-    def transfer(amount, recipient, comment = nil)
-      # 1. Confirm amount
-      # 2. Confirm recipient exists
-      # 3. Send money within internal database and create two transfers (double book keeping, -x amount from sender account +x amount to recipient account)
-      # 4. Comment with trade_id for better record keeping
+    def transfer(recipient_label, amount, comment = nil)
+      recipient = self.wallet.accounts.find_by(label: recipient_label)
+      if recipient
+        self.wallet.transfer(self, recipient, amount, comment)
+      else
+        false
+      end
     end
 
     protected

@@ -11,6 +11,7 @@ module RubyWallet
     field :address,               type: String
     field :amount,                type: BigDecimal
     field :confirmations,         type: Integer
+    field :confirmed,             type: Boolean
 
     field :occurred_at,           type: Time
     field :received_at,           type: Time
@@ -18,6 +19,8 @@ module RubyWallet
     embedded_in :wallet
 
     validates_uniqueness_of :transaction_id
+    validates_numericality_of :amount, greater_than: 0
+    validates :amount, format: { with: /^\d{0,8}(\.\d{1,8}|)/ }
 
     def account
       self.wallet.accounts.find(account_id)

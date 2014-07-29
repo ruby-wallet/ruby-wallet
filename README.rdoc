@@ -30,7 +30,10 @@ Alternatively you can specify the local folder, as in your vendor folder in Rail
 
 The simplest possible usage after configuration is complete
 
-  RubyWallet.connect("BTC").balance
+  RubyWallet.connect("BTC").unconfirmed_balance
+  # => 0.001
+
+  RubyWallet.connect("BTC").confirmed_balance
   # => 0.001
 
 Confirm if addresses are valid using the wallet method
@@ -42,15 +45,46 @@ Confirm address is owned by current wallet
 
   wallet.own_address?(address)
 
-View the recent transactions of the entire wallet.
+A wallet has transactions, transfers and accounts embedded inside. 
 
   wallet.transactions
+  wallet.transfers
+  wallet.accounts
+
+Sync the abstracted wallet transactions with the coind client. The sync method is designed to be called from blocknotify.
+
+  wallet.sync
+
+Sync a specific transaction with the coind client. The transaction sync method is designed to be called from walletnotify.
+
+  wallet.sync_transaction(transaction_id)
+
+The configuration file provides the fixed transaction fee for withdrawals and the confirmations required for a transaction to be confirmed. 
+
+  wallet.transaction_fee
+  wallet.confirmations
+
+From the wallet you can create accounts and generate addresses to be associated with a specified account.
+
+  wallet.create_account(label)
+  wallet.generate_address(label)
+
+A transfer is handled indepedent of the coind client and only exists within the MongoDB account management abstraction. When a transfer is preformed two separate transfers are created, a "send" which removes money from the sender account and "receive" which adds money to the recipient account.
+
+  wallet.transfer(sender, recipient, amount, comment)
+
+A withdrawal is only possible from an account and checks against available balance.
+
+  wallet.withdrawal(sender, address, amount)
 
 == Wallet Encryption
 
 Encrypting your wallet with the password supplied in the config file will enable encryption. Before every action, an unlock command will be used to unlock and automatically relock your wallet between protected actions. If your wallet is encrypted prior to setup, you must manually set the encrypted attribute to true. (Not fully implemented)
 
   wallet.encrypt
+
+  wallet.encrypted
+  # => true
 
 == Wallet Accounts
 
@@ -72,11 +106,11 @@ A wallet embeds many accounts, each account organizes one or more coind addresse
 
 Withdraw coins from an account, with validations to prevent overspending.
 
-  account.withdraw(5.5, address)          # sends 5.5 coins to the withdrawal address
+  account.withdraw(address, 5,5)          # sends 5.5 coins to the withdrawal address
 
 Transfer coins from one account to another, with validations to prevent overspending. Transfers do not create "move" transactions in the wallet.dat.
 
-  account.transfer(5.5, recipeint_label)  # sends 5.5 coins to the recipient account
+  account.transfer(recipeint_label, 5.5)  # sends 5.5 coins to the recipient account
 
 == Account Transactions
 
@@ -108,6 +142,7 @@ A transfer exists only within MongoDB account management abstraction in ruby-wal
   transfer.recipient                      # returns account MongoDB object
   transfer.recipient_id                   # returns internal account MongoDB _id
 
+  transaction.category                    # returns "send" or "receive"
   transaction.amount
 
   transaction.comment

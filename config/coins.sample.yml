@@ -10,6 +10,8 @@ BLK:
       rpc_port: "15715"
       rpc_ssl: false
       wallet_password: "abc!"
+      confirmations: 10
+      transaction_fee: 0.02
 
    test:
      <<: *base
@@ -21,3 +23,5 @@ BLK:
       rpc_port: "15715"
       rpc_ssl: false
       wallet_password: "abc!"
+      confirmations: 10
+      transaction_fee: 0.02

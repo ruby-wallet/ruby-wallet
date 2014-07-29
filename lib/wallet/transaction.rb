@@ -26,6 +26,10 @@ module RubyWallet
       self.wallet.accounts.find(account_id)
     end
 
+    def confirmed?
+      self.confirmed
+    end
+
     def timestamp
       if occurred_at
         self.occured_at

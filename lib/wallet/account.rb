@@ -35,31 +35,47 @@ module RubyWallet
       transactions.where(category: "withdrawal")
     end
 
-    def balance(minimum_confirmations)
-      balance = BigDecimal(0)
-      balance += self.deposits.where(confirmations: minimum_confirmations).reduce(0){|sum, deposit| sum + deposit.amount}
-      balance += self.withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
-      balance += self.transfers.reduce(0){|sum, transfer| sum + transfer.amount}
-      balance
-    end
-
     def withdraw(address, amount)
       self.wallet.withdraw(self, address, amount)
+      self.upadte_balances
     end
 
     def transfer(recipient_label, amount, comment = nil)
       recipient = self.wallet.accounts.find_by(label: recipient_label)
       if recipient
         self.wallet.transfer(self, recipient, amount, comment)
+        self.update_balances
       else
         false
       end
     end
 
+    def update_balances
+      self.update_unconfirmed_balance
+      self.update_confirmed_balance
+    end
+
     protected
 
+      # Need to find a way to call this only when deposits come in
       def update_total_received
         self.update_attributes(total_received: self.wallet.total_received(self.label))
+      end
+
+      def update_unconfirmed_balance
+        balance = BigDecimal(0)
+        balance += self.deposits.reduce(0){|sum, deposit| sum + deposit.amount}
+        balance += self.withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
+        balance += self.transfers.reduce(0){|sum, transfer| sum + transfer.amount}
+        self.update_attributes(unconfirmed_balance: balance)
+      end
+  
+      def update_confirmed_balance
+        balance = BigDecimal(0)
+        balance += self.deposits.where(confirmations: self.wallet.confirmations).reduce(0){|sum, deposit| sum + deposit.amount}
+        balance += self.withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
+        balance += self.transfers.reduce(0){|sum, transfer| sum + transfer.amount}
+        self.update_attributes(confirmed_balance: balance)
       end
 
   end

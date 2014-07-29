@@ -2,18 +2,18 @@ require 'spec_helper'
 
 describe Coind::Request do
   it "should omit null arguments and everything after them" do
-    # bitcoin rejects null values even for optional params. Since
+    # coind rejects null values even for optional params. Since
     # even params following those may have default non-nil values,
     # we'll assume the first non-nil value marks a set of optional
     # params, and drop it and everything following it.
 
     req = Coind::Request.new('svc', [1, nil, nil, nil])
-    req.params.should == [1]
+    expect(req.params).to match_array([1])
     
     req = Coind::Request.new('svc', [nil])
-    req.params.should == []
+    expect(req.params).to match_array([])
     
     req = Coind::Request.new('svc', [1, nil, nil, 1, nil])
-    req.params.should == [1]
+    expect(req.params).to match_array([1])
   end
 end

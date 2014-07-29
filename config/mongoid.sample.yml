@@ -1,7 +1,31 @@
+development:
+  sessions:
+    default:
+      database: ruby_wallet_development
+      hosts:
+        - localhost:27017
+      options:
+        safe: false
+  options:
+    raise_not_found_error: false
+    use_utc: true
+
+test:
+  sessions:
+    default:
+      database: ruby_wallet_test
+      hosts:
+        - localhost:27017
+      options:
+        safe: false
+  options:
+    raise_not_found_error: false
+    use_utc: true
+
 production:
   sessions:
     default:
-      database: excoin_production
+      database: ruby_wallet_production
       hosts:
         - localhost:27017
       options:

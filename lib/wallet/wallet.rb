@@ -128,8 +128,6 @@ module RubyWallet
       self.update_attributes(last_update: Time.now)
     end 
 
-    end
-
     def sync_transaction(transaction_id)
       transaction = self.transactions.find_by(transaction_id)
       if transaction
@@ -171,7 +169,7 @@ module RubyWallet
 
       def update_balances
         self.update_attributes(unconfirmed_balance: client.balance(nil, 0),
-                               confirmed_balance:   client.balance(nil, self.confirmations
+                               confirmed_balance:   client.balance(nil, self.confirmations)
                               )
       end
 

@@ -10,25 +10,4 @@ describe Coind do
     cli.balance.should == 0.001
   end
   
-  it "DSL, included" do
-    class << self
-      include Coind
-    end
-    
-    username $user
-    password $pass
-    
-    balance.should == 0.001
-  end
-  
-  it "DSL, extended" do
-    class << self
-      include Coind
-      
-      username $user
-      password $pass
-      
-      balance.should == 0.001
-    end
-  end
 end

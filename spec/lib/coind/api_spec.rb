@@ -1,28 +1,24 @@
 require 'spec_helper'
 
 describe Coind::API do
-  subject { Coind::API.new(:user => $user, :pass => $pass) }
-  
-  it "should have default host, port, ssl" do
-    subject.host.should == 'localhost'
-    subject.port.should == 8332
-    subject.ssl?.should be_false
+  subject { Coind::API.new({:rpc_user => $user, :rpc_password => $pass, rpc_host: 'example.com', rpc_port: 1234, rpc_ssl: true}) }
+
+  it "should accept rpc_user, rpc_password, rpc_host, rpc_port, rpc_ssl options" do
+    req = Coind::API.new({rpc_user: $user, rpc_password: $pass, rpc_host: 'example.com', rpc_port: 1234, rpc_ssl: true})
+    req.rpc_user.should == $user
+    req.rpc_password.should == $pass
+    req.rpc_host.should == 'example.com'
+    req.rpc_port.should == 1234
+    req.rpc_ssl?.should be_true
   end
-  
-  it "should accept host, port, ssl options" do
-    req = Coind::API.new(user: $user, pass: $pass, host: 'example.com', port: 1234, ssl: true)
-    req.host.should == 'example.com'
-    req.port.should == 1234
-    req.ssl?.should be_true
-  end
-  
+
   it "should build an options hash" do
-    subject.to_hash.should == {
-      :user => $user,
-      :pass => $pass,
-      :host => 'localhost',
-      :port => 8332,
-      :ssl => false,
-    }
+    expect(subject.to_hash).to match_hash({
+      :rpc_user => $user,
+      :rpc_password => $pass,
+      :rpc_host => 'example.com',
+      :rpc_port => 1234,
+      :rpc_ssl => true,
+    })
   end
 end

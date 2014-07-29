@@ -20,13 +20,14 @@ module Coin
 end
 
 module RubyWallet
-  @config = YAML::load_file(File.expand_path('../../config/config.yml', __FILE__)).symbolize_keys
+  require 'yaml'
+  @config = YAML::load_file(File.expand_path('../../config/config.yml', __FILE__))
 
   require 'mongoid'
   require 'mongoid/encrypted_string/global'
 
-  Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), @config[:ENV].to_sym)
-  Mongoid::EncryptedString.config.key = @config[:ENCRYPTION_KEY]
+  Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), @config['ENV'].to_sym)
+  Mongoid::EncryptedString.config.key = @config['ENCRYPTION_KEY']
 
   Coin.set(YAML::load_file(File.expand_path("../../config/coins.yml", __FILE__)).symbolize_keys)
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Cond::Client do
-  subject { Coind::Client.new($user, $pass) }
+describe Coind::Client do
+  subject { Coind::Client.new({rpc_user: $user, rpc_password: $pass, rpc_host: 'localhost', rpc_port: 8332, rpc_ssl: false}) }
 
   it "defaults" do
     subject.user.should == $user
@@ -16,7 +16,7 @@ describe Cond::Client do
 
     service 'getinfo' do
       it "should produce the expected result" do
-        result.should == {
+        expect(result).to match_hash({
           'version' => 32400,
           'balance' => 0.001,
           'blocks' => 141957,
@@ -30,77 +30,59 @@ describe Cond::Client do
           'keypoololdest' => 1313766189,
           'paytxfee' => 0.0,
           'errors' => ""
-        }
+        })
       end
     end
 
     service 'getblockcount' do
       it "should produce the expected result" do
-        result.should == 141972
-      end
-    end
-
-    service 'getblocknumber' do
-      it "should produce the expected result" do
-        result.should == 141972
+        expect(result).to be eq(141972)
       end
     end
 
     service 'getconnectioncount' do
       it "should produce the expected result" do
-        result.should == 8
-      end
-    end
-
-    service 'getdifficulty' do
-      it "should produce the expected result" do
-        result.should == 1805700.83619367
-      end
-    end
-
-    service 'getgenerate' do
-      it "should produce the expected result" do
-        result.should be_false
+        expect(result).to be eq(8)
       end
     end
 
     service 'gethashespersec' do
       it "should produce the expected result" do
-        result.should == 0
+        expect(result).to be eq(0)
       end
     end
 
     service 'listreceivedbyaddress' do
       context 'without params' do
         it "should produce the expected result" do
-          result.should == [{
+          expect(result).to match_array([{
             'address' => "1234",
             'account' => "",
             'label' => "",
             'amount' => 0.001,
-            'confirmations' => 180}]
+            'confirmations' => 180}])
         end
       end
 
       context 'with minconf 0' do
         it "should produce the expected result" do
-          result(0).should == [{
+          expect(result(0)).to match_array([{
             'address' => "1234",
             'account' => "",
             'label' => "",
             'amount' => 0.001,
-            'confirmations' => 180}]
+            'confirmations' => 180}])
         end
       end
 
       context 'with minconf 0 and includeempty true' do
         it "should produce the expected result" do
-          result(0, true).should == [{
+          expect(result(0, true)).to match_array([{
             'address' => "1234",
             'account' => "",
             'label' => "",
             'amount' => 0.001,
-            'confirmations' => 180}]
+            'confirmations' => 180}])
         end
       end
     end
@@ -108,14 +90,7 @@ describe Cond::Client do
     service 'signmessage' do
       context 'success' do
         it "should produce the expected result" do
-          result('valid_address', 'message').should == 'Gwz2BAaqdsLTqJsh5a4'
-        end
-      end
-
-      context 'invalid address' do
-        it "should produce the expected result" do
-          lambda { result('invalid_address', 'message').should }.should \
-            raise_error RestClient::InternalServerError
+          expect(result('valid_address', 'message')).to eq('Gwz2BAaqdsLTqJsh5a4')
         end
       end
     end
@@ -123,13 +98,13 @@ describe Cond::Client do
     service 'verifymessage' do
       context 'success' do
         it "should produce the expected result" do
-          result('address', 'message', 'signature').should be_true
+          expect(result('address', 'message', 'signature')).to eq(true)
         end
       end
 
       context 'failure' do
         it "should produce the expected result" do
-          result('address', 'message', 'signature').should be_false
+          expect(result('address', 'message', 'signature')).to eq(false)
         end
       end
     end

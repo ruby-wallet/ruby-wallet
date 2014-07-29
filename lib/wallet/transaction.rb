@@ -20,7 +20,7 @@ module RubyWallet
 
     validates_uniqueness_of :transaction_id
     validates_numericality_of :amount, greater_than: 0
-    validates :amount, format: { with: /^\d{0,8}(\.\d{1,8}|)/ }
+    validates :amount, format: { with: /\A\d{0,8}(\.\d{1,8}|)\z/ }
 
     def account
       self.wallet.accounts.find(account_id)

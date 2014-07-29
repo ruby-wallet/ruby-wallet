@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_development_dependency "rake"
+  s.add_development_dependency "fakeweb"
   s.add_development_dependency "bundler"
   s.add_development_dependency "rspec"
   s.add_runtime_dependency "rest-client"

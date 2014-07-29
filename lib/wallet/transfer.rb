@@ -15,9 +15,9 @@ module RubyWallet
 
     embedded_in :wallet
 
-    validates :category, format: { with: /^(send|receive)$/ }
-    validates :amount, format: { with: /^\d{0,8}(\.\d{1,8}|)/ }
-    validate :amount_check
+    validates :category, format: { with: /\A(send|receive)\z/ }
+    validates :amount, format: { with: /\A\d{0,8}(\.\d{1,8}|)\z/ }
+    validate  :amount_check
 
     def sender
       self.wallet.accounts.find(self.sender_id)

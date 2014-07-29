@@ -57,11 +57,6 @@ module RubyWallet
 
     protected
 
-      # Need to find a way to call this only when deposits come in
-      def update_total_received
-        self.update_attributes(total_received: self.wallet.total_received(self.label))
-      end
-
       def update_unconfirmed_balance
         balance = BigDecimal(0)
         balance += self.deposits.reduce(0){|sum, deposit| sum + deposit.amount}

@@ -1,6 +1,7 @@
 module RubyWallet
   class Transfer
     include Mongoid::Document
+    #include Mongoid::Paranoia
 
     field :timestamp,      type: Time
 

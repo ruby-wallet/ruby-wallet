@@ -23,6 +23,8 @@ module RubyWallet
 
     field :transaction_checked_count, type: Integer,                   default: 0
 
+    field :last_updated,              type: Time,                      default: Time.now
+
     embeds_many :accounts
     embeds_many :transactions
     embeds_many :transfers
@@ -63,7 +65,7 @@ module RubyWallet
 
     def withdraw(account, address, amount)
       if account.confirmed_balance >= amount and self.confirmed_balance >= amount and self.valid_address?(address)
-        # Transaction fees should be handled higher in the top level application
+        # Transaction fees should be handled higher in the stack
         client.sendtoaddress address, amount
       else
         false
@@ -96,13 +98,53 @@ module RubyWallet
     end
 
     def sync
-      client.listtransactions(nil, to, from)
-      # refer to notes for implementation
+      wallet_transactions = client.listtransactions(nil, 99999)
+      reset_transactions if self.transaction_checked_count > wallet_transactions.count
+      if wallet_transactions and self.transaction_checked_count != wallet_transactions.count
+        wallet_transactions[self.transaction_checked_count..wallet_transactions.count].each do |txn|
+          self.update_attributes(transaction_checked_count: self.transaction_checked_count + 1)
+          self.transactions.create(account_label: transaction["account"],
+                                   transaction_id: transaction["txid"],
+                                   address: transaction["address"],
+                                   amount: BigDecimal.new(transaction["amount"]),
+                                   confirmations: transaction["confirmations"].to_i,
+                                   occurred_at: Time.at(transaction["time"]),
+                                   received_at: Time.at(transaction["timereceived"]),
+                                   category: transaction["category"]
+                                  )
+          self.update_total_received_by_label(transaction["account"]) if transaction["category"] == "receive"
+        end
+      end
+      self.transactions.where(confirmed => false).each do |transaction|
+        wallet_transaction = self.api.get_transaction(transaction.transaction_id)
+        unless wallet_transaction.class == "Hash" # This indicates it returned an error
+          transaction.update_attributes(confirmations: wallet_transaction.confirmations)
+          if transaction.confirmations >= self.confirmations
+            transaction.confirm
+          end
+        end
+      end
+      self.update_balances
+      self.update_attributes(last_update: Time.now)
+    end 
+
     end
 
     def sync_transaction(transaction_id)
-      client.get_transaction transaction_id
-      # refer to notes for implementation
+      transaction = self.transactions.find_by(transaction_id)
+      if transaction
+        wallet_transaction = client.get_transaction(transaction_id)
+        unless wallet_transaction.class == "Hash" # This indicates it returned an error
+          if transaction.status == "pending"
+            transaction.update_attributes(confirmations: wallet_transaction.confirmations)
+            if transaction.confirmations >= self.confirmations
+              transaction.confirm
+            end
+          end
+        end
+      else
+        sync
+      end 
     end
 
     private
@@ -127,21 +169,20 @@ module RubyWallet
         client.validateaddress(address)
       end
 
-      def update_balance
-        self.update_attributes(balance: client.balance(nil, 0))
+      def update_balances
+        self.update_attributes(unconfirmed_balance: client.balance(nil, 0),
+                               confirmed_balance:   client.balance(nil, self.confirmations
+                              )
       end
 
-      def transaction(transaction)
-        self.transactions.create(account_label: transaction["account"],
-                                 transaction_id: transaction["txid"],
-                                 address: transaction["address"],
-                                 recipient_account: transaction["otheraccount"],
-                                 amount: BigDecimal.new(transaction["amount"]),
-                                 confirmations: transaction["confirmations"].to_i,
-                                 occurred_at: Time.at(transaction["time"]),
-                                 received_at: Time.at(transaction["timereceived"]),
-                                 category: transaction["category"]
-                                )
+      def reset_transactions
+        self.transactions.destroy
+        self.update_attributes(transction_checked_count: 0)
+      end
+
+      def update_total_received_by_label(label)
+        account = self.accounts.find_by(label: label)
+        account.update_attributes(total_received: client.getreceivedbylabel(label))
       end
 
   end

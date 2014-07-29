@@ -3,20 +3,12 @@ require 'spec_helper'
 describe Coind::Client do
   subject { Coind::Client.new({rpc_user: $user, rpc_password: $pass, rpc_host: 'localhost', rpc_port: 8332, rpc_ssl: false}) }
 
-  it "defaults" do
-    subject.user.should == $user
-    subject.pass.should == $pass
-    subject.host.should == 'localhost'
-    subject.port.should == 8332
-    subject.ssl?.should_not be_true
-  end
-
   context "RPC" do
     extend RPCServiceHelper
 
     service 'getinfo' do
       it "should produce the expected result" do
-        expect(result).to match_hash({
+        expect(result).to eq({
           'version' => 32400,
           'balance' => 0.001,
           'blocks' => 141957,
@@ -36,19 +28,13 @@ describe Coind::Client do
 
     service 'getblockcount' do
       it "should produce the expected result" do
-        expect(result).to be eq(141972)
+        expect(result).to eq(141972)
       end
     end
 
     service 'getconnectioncount' do
       it "should produce the expected result" do
-        expect(result).to be eq(8)
-      end
-    end
-
-    service 'gethashespersec' do
-      it "should produce the expected result" do
-        expect(result).to be eq(0)
+        expect(result).to eq(8)
       end
     end
 

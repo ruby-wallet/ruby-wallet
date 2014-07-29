@@ -131,6 +131,13 @@ A transaction exists on the blockchain, are aggregated from the coind client and
   transaction.received_at
   transaction.timestamp
 
+The number of confirmations to be considered confirmed is specified in the coins.yml config. For greater efficency, once confirmed transaction confirmations are no longer updated.
+
+  transaction.confrim                     # sets the confirmed Boolean to true if confirmations >= wallet.confirmations
+
+  transaction.confirmed?
+  # => true
+
 
 == Account Transfers
 

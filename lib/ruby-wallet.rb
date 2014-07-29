@@ -36,6 +36,7 @@ module RubyWallet
   require 'wallet/transfer'
 
   def self.connect(iso_code)
+    Wallet.all.destroy
     wallet = Wallet.find_by(iso_code: iso_code)
     if wallet
       wallet
@@ -45,9 +46,9 @@ module RubyWallet
                     rpc_host:        Coin.config(iso_code, @config[:ENV])[:rpc_host],
                     rpc_port:        Coin.config(iso_code, @config[:ENV])[:rpc_port],
                     rpc_ssl:         Coin.config(iso_code, @config[:ENV])[:rpc_ssl],
+                    iso_code:        iso_code,
                     wallet_password: Coin.config(iso_code, @config[:ENV])[:wallet_password],
-                    confirmations:   Coin.config(iso_code, @config[:ENV])[:confirmations],
-                    transaction_fee: Coin.config(iso_code, @config[:ENV])[:transaction_fee]
+                    confirmations:   Coin.config(iso_code, @config[:ENV])[:confirmations]
                    )
     else
       return {'error' => 'No configuration found for specified iso code.'}

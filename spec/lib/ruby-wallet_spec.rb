@@ -13,3 +13,13 @@ describe Coind do
   end
   
 end
+
+describe RubyWallet do
+  include RubyWallet
+
+  it "as a function" do
+    cli = RubyWallet.connect("BLK")
+    expect(cli.api.class).to eq("Ruby::Wallet")
+  end
+
+end

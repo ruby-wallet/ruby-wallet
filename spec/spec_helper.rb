@@ -1,6 +1,6 @@
 require 'fakeweb'
 
-# bitcoin user settings
+# coind user settings
 $user = 'user'
 $pass = 'pass'
 

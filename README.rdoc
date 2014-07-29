@@ -160,6 +160,7 @@ A transfer exists only within MongoDB account management abstraction in ruby-wal
 
 I would like to implement easy way to utilize  multi-signatures, automatically prune slow nodes from connection list, use the raw transaction API to increase efficency and increase the test coverage.
 
+Considering building out a sinatra API for the higher level of the stack to communicate with. This would allow this abstraction to be more flexible in stack placement. 
 
 Donate to the ruby-wallet project:
 1LJtuko15Ck1gq5H9K24iGnA1yvtcBMYa4

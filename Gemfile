@@ -1,6 +1,6 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 gemspec
 gem 'json'
-gem 'mongoid'
-gem "mongoid-encrypted_string"
+gem 'mongoid', '3.1.6'
+gem 'mongoid-encrypted_string'

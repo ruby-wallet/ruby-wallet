@@ -41,15 +41,15 @@ module RubyWallet
     wallet = Wallet.find_by(iso_code: iso_code)
     if wallet
       wallet
-    elsif  Coin.config(iso_code, @config[:ENV])
-      Wallet.create(rpc_user:        Coin.config(iso_code, @config[:ENV])[:rpc_user],
-                    rpc_password:    Coin.config(iso_code, @config[:ENV])[:rpc_password],
-                    rpc_host:        Coin.config(iso_code, @config[:ENV])[:rpc_host],
-                    rpc_port:        Coin.config(iso_code, @config[:ENV])[:rpc_port],
-                    rpc_ssl:         Coin.config(iso_code, @config[:ENV])[:rpc_ssl],
+    elsif  Coin.config(iso_code, @config['ENV'])
+      Wallet.create(rpc_user:        Coin.config(iso_code, @config['ENV'])[:rpc_user],
+                    rpc_password:    Coin.config(iso_code, @config['ENV'])[:rpc_password],
+                    rpc_host:        Coin.config(iso_code, @config['ENV'])[:rpc_host],
+                    rpc_port:        Coin.config(iso_code, @config['ENV'])[:rpc_port],
+                    rpc_ssl:         Coin.config(iso_code, @config['ENV'])[:rpc_ssl],
                     iso_code:        iso_code,
-                    wallet_password: Coin.config(iso_code, @config[:ENV])[:wallet_password],
-                    confirmations:   Coin.config(iso_code, @config[:ENV])[:confirmations]
+                    wallet_password: Coin.config(iso_code, @config['ENV'])[:wallet_password],
+                    confirmations:   Coin.config(iso_code, @config['ENV'])[:confirmations]
                    )
     else
       return {'error' => 'No configuration found for specified iso code.'}

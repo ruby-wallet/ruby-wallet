@@ -26,6 +26,12 @@ module RubyWallet
       self.wallet.accounts.find(account_id)
     end
 
+    def confirm
+      if self.confirmations >= self.wallet.confirmations
+        self.update_attributes(confirmed: true)
+      end
+    end
+
     def confirmed?
       self.confirmed
     end

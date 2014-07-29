@@ -64,13 +64,12 @@ module RubyWallet
     def withdraw(account, address, amount)
       if amount > self.transaction_fee and account.confirmed_balance >= amount and self.confirmed_balance >= amount and self.valid_address?(address)
         net_amount = amount - self.transaction_fee
-          if net_amount > 0
-            # transfer transaction fee to fee account so it is substracted from their total
-            # send exccess fees to "" like null account
-            client.sendtoaddress address, amount
-          else
-            false
-          end
+        if net_amount > 0
+          # transfer transaction fee to fee account so it is substracted from their total
+          # send exccess fees to "" like null account
+          client.sendtoaddress address, amount
+        else
+          false
         end
       else
         false

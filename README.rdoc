@@ -80,20 +80,39 @@ Transfer coins from one account to another, with validations to prevent overspen
 
 == Account Transactions
 
-A transaction has the following methods
+A transaction exists on the blockchain, are aggregated from the coind client and can be either a deposit or withdrawal.
 
-  transaction = account.transactions
+  transaction.transaction_id              # returns txid from coind
 
-  transaction.txn_id
-  transaction.account
-  transaction.address
-  transaction.recipient_account
+  transaction.account                     # returns account MongoDB object
+  transaction.account_label
+  transaction.account_id                  # returns internal account MongoDB _id
+
+  transaction.category                    # returns either deposit or withdrawal
+  transaction.address                     
   transaction.amount
-  transaction.category
   transaction.confirmations
+
   transaction.occurred_at
   transaction.received_at
   transaction.timestamp
+
+
+== Account Transfers
+
+A transfer exists only within MongoDB account management abstraction in ruby-wallet. Transfers are double-entry bookkeeping objects that track coin movement between accounts.
+
+  transfer.sender                         # returns account MongoDB object
+  transfer.sender_id                      # returns internal account MongoDB _id
+
+  transfer.recipient                      # returns account MongoDB object
+  transfer.recipient_id                   # returns internal account MongoDB _id
+
+  transaction.amount
+
+  transaction.comment
+
+  transfer.timestmap
 
 == Future Plans
 

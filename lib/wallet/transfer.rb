@@ -13,5 +13,13 @@ module RubyWallet
 
     embedded_in :wallet
 
+    def sender
+      self.wallet.accounts.find(self.sender_id)
+    end
+
+    def recipient
+      self.wallet.accounts.find(self.recipient_id)
+    end
+
   end
 end

@@ -81,6 +81,7 @@ module RubyWallet
     end
 
     def own_address?(address)
+      response = validate_address(address)
       if response["ismine"]
         response["ismine"]
       else

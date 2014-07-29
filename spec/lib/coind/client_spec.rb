@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Coind::Client do
-  subject { Coind::Client.new({rpc_user: $user, rpc_password: $pass, rpc_host: 'localhost', rpc_port: 8332, rpc_ssl: false}) }
+  subject { Coind::Client.new($coind_options) }
 
   context "RPC" do
     extend RPCServiceHelper
 
     service 'getinfo' do
-      it "should produce the expected result" do
+      it "returns the coind info" do
         expect(result).to eq({
           'version' => 32400,
           'balance' => 0.001,
@@ -27,20 +27,20 @@ describe Coind::Client do
     end
 
     service 'getblockcount' do
-      it "should produce the expected result" do
+      it "returns the block count" do
         expect(result).to eq(141972)
       end
     end
 
     service 'getconnectioncount' do
-      it "should produce the expected result" do
+      it "returns the connection count" do
         expect(result).to eq(8)
       end
     end
 
     service 'listreceivedbyaddress' do
       context 'without params' do
-        it "should produce the expected result" do
+        it "returns an array trasactions" do
           expect(result).to match_array([{
             'address' => "1234",
             'account' => "",
@@ -51,7 +51,7 @@ describe Coind::Client do
       end
 
       context 'with minconf 0' do
-        it "should produce the expected result" do
+        it "returns an array of transactions" do
           expect(result(0)).to match_array([{
             'address' => "1234",
             'account' => "",
@@ -62,7 +62,7 @@ describe Coind::Client do
       end
 
       context 'with minconf 0 and includeempty true' do
-        it "should produce the expected result" do
+        it "returns an array of transactions" do
           expect(result(0, true)).to match_array([{
             'address' => "1234",
             'account' => "",
@@ -75,7 +75,7 @@ describe Coind::Client do
 
     service 'signmessage' do
       context 'success' do
-        it "should produce the expected result" do
+        it "returns a valid address" do
           expect(result('valid_address', 'message')).to eq('Gwz2BAaqdsLTqJsh5a4')
         end
       end
@@ -83,13 +83,13 @@ describe Coind::Client do
 
     service 'verifymessage' do
       context 'success' do
-        it "should produce the expected result" do
+        it "returns true when message is verified" do
           expect(result('address', 'message', 'signature')).to eq(true)
         end
       end
 
       context 'failure' do
-        it "should produce the expected result" do
+        it "returns false when message is unverifiable" do
           expect(result('address', 'message', 'signature')).to eq(false)
         end
       end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Coind::Request do
-  it "should omit null arguments and everything after them" do
+  it "omits null arguments and everything after them" do
     # coind rejects null values even for optional params. Since
     # even params following those may have default non-nil values,
     # we'll assume the first non-nil value marks a set of optional

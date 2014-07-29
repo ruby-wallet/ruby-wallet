@@ -8,7 +8,7 @@ describe Coind do
   end
   
   it "as a function" do
-    cli = Coind({:rpc_user => $user, :rpc_password => $pass, :rpc_host => 'localhost', :rpc_port => '8332', :rpc_ssl => false})
+    cli = Coind($coind_options)
     expect(cli.balance).to eq(0.001)
   end
   
@@ -18,8 +18,9 @@ describe RubyWallet do
   include RubyWallet
 
   it "as a function" do
-    cli = RubyWallet.connect("BLK")
-    expect(cli.api.class).to eq("Ruby::Wallet")
+    cli = RubyWallet.connect($coin)
+    expect(cli).to be_a(RubyWallet::Wallet)
+    expect(cli.iso_code).to eq($coin)  
   end
 
 end

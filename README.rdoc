@@ -142,7 +142,7 @@ The number of confirmations to be considered confirmed is specified in the coins
 
 == Account Transfers
 
-A transfer exists only within MongoDB account management abstraction in ruby-wallet. Transfers are double-entry bookkeeping objects that track coin movement between accounts.
+A transfer exists only within MongoDB account management abstraction in ruby-wallet. Each transfer creates two objects, for double-entry bookkeeping, that track coin movement between accounts.
 
   transfer.sender                         # returns account MongoDB object
   transfer.sender_id                      # returns internal account MongoDB _id

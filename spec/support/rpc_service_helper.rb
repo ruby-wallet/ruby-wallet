@@ -10,8 +10,8 @@ module RPCServiceHelper
         end
       end
       
-      define_method :result do |*args|
-        FakeWeb.register_uri(:post, "http://user:pass@localhost:8332", :response => fixture(fixture_name))
+      define_method :result do |api_call, *args|
+        FakeWeb.register_uri(:post, "http#{'s' if $coin['rpc_ssl']}://#{$coin['rpc_user']}:#{$coin['rpc_password']}@#{$coin['rpc_host']}:#{$coin['rpc_port']}/", :response => fixture(api_call))
         subject.send(name, *args)
       end
       

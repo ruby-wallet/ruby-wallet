@@ -1,15 +1,17 @@
 require 'spec_helper'
 
 describe RubyWallet::Wallet do
-  subject { RubyWallet.connect($coin) }
+
+  extend RPCServiceHelper
+  subject { RubyWallet.connect($coin_iso) }
 
   it "returns a Mongoid object" do
-    expect(subject.class).to eq(RubyWallet::Wallet)
-    expect(subject.id.class).to eq(Moped::BSON::ObjectId)
+    expect(subject).to be_a(RubyWallet::Wallet)
+    expect(subject.id).to be_a(Moped::BSON::ObjectId)
   end
 
   it "returns Wallet object with expected iso_code" do
-    expect(subject.iso_code).to eq($coin)
+    expect(subject.iso_code).to eq($coin_iso)
   end
 
   it "returns Wallet object with basic configuration from coins.yml" do
@@ -35,20 +37,25 @@ describe RubyWallet::Wallet do
     expect(subject.confirmations).to_not eq(nil)
   end
 
-  it "connects to Coind API to validate an address" do 
-    expect(subject.valid_address?($coin_address)).to be_a(TrueClass).or be_a(FalseClass)
-  end
+  context "Coind API" do
+    service "valid_address?" do
+      it "connects to Coind API to validate an address" do 
+       expect(result("validateaddress", $coin_address)).to be_a(TrueClass).or be_a(FalseClass)
+      end
+    end
 
-  it "connects to Coind API to validate address ownership" do 
-    expect(subject.own_address?($coin_address)).to be_a(String)
-  end
+    service "own_address?" do
+      it "connects to Coind API to validate address ownership" do 
+        expect(result("validateaddress", $coin_address)).to be_a(TrueClass).or be_a(FalseClass)
+      end
+    end
 
-  it "creates an account when given a label" do
-    expect(subject.create_account($account_label)).to be_a(RubyWallet::Account)
+    it "creates an account when given a label" do
+      expect(subject.create_account($account_label)).to be_a(RubyWallet::Account)
+    end
+  
+    it "creates an address for an account" do 
+      expect(subject.generate_address($account_label)).to be_a(String)
+    end
   end
-
-  it "creates an address for an account" do 
-    expect(subject.generate_address($account_label)).to be_a(String)
-  end
-
 end

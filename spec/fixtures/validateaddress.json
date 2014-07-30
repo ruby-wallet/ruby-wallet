@@ -1,8 +1,8 @@
-HTTP/1.1 500 Internal Server Error
-Date: Sun, 21 Aug 2011 22:53:05 +0000
-Connection: close
-Content-Length: 183
+HTTP/1.1 200 OK
+Date: Wed, 30 Jul 2014 14:03:26 +0000
+Connection: keep-alive
+Content-Length: 119
 Content-Type: application/json
-Server: bitcoin-json-rpc/0.3.24-beta
+Server: blackcoin-json-rpc/v1.1.0.1-10-g76a2fe8
 
-{"isvalid" : true, "address" : "B98Z9DEnTtbYMWZF33iPKjF2LqQa1QUbvq", "ismine" : false}
+{"result":{"isvalid":true,"address":"B98Z9DEnTtbYMWZF33iPKjF2LqQa1QUbvq","ismine":false},"error":null,"id":"curltest"}

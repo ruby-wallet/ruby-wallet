@@ -76,7 +76,7 @@ module RubyWallet
       self.accounts.create(label: label)
     end
 
-    def create_address(label)
+    def generate_address(label)
       client.getnewaddress label
     end
 

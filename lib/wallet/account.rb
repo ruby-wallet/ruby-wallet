@@ -12,10 +12,10 @@ module RubyWallet
 
     embedded_in :wallet
 
-    after_create :new_address
+    after_create :generate_address
 
-    def new_address
-      address = self.wallet.new_address(self.label)
+    def generate_address
+      address = self.wallet.generate_address(self.label)
       self.update_attributes(addresses: self.addresses.push(address))
     end
 

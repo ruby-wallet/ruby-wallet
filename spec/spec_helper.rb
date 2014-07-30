@@ -1,5 +1,7 @@
 require 'fakeweb'
 
+ENV['ENV'] = "test"
+
 # coind settings
 $coind_options = {:rpc_user => 'user', :rpc_password => 'pass', :rpc_host => 'localhost', :rpc_port => 8332, :rpc_ssl => false}
 

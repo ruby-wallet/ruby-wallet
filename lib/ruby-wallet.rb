@@ -10,8 +10,8 @@ module Coind
 end
 
 module Coin
-  def self.config(iso_code, env)
-    @coin[iso_code.to_sym][env].symbolize_keys
+  def self.config(iso_code)
+    @coin[iso_code.to_sym][ENV['ENV']].symbolize_keys
   end
 
   def self.set(hash)
@@ -21,13 +21,13 @@ end
 
 module RubyWallet
   require 'yaml'
-  @config = YAML::load_file(File.expand_path('../../config/config.yml', __FILE__))
+  config = YAML::load_file(File.expand_path('../../config/config.yml', __FILE__))
 
   require 'mongoid'
   require 'mongoid/encrypted_string/global'
 
-  Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), @config['ENV'].to_sym)
-  Mongoid::EncryptedString.config.key = @config['ENCRYPTION_KEY']
+  Mongoid.load!(File.expand_path("../../config/mongoid.yml", __FILE__), ENV['ENV'].to_sym)
+  Mongoid::EncryptedString.config.key = config['ENCRYPTION_KEY']
 
   Coin.set(YAML::load_file(File.expand_path("../../config/coins.yml", __FILE__)).symbolize_keys)
 
@@ -41,15 +41,15 @@ module RubyWallet
     wallet = Wallet.find_by(iso_code: iso_code)
     if wallet
       wallet
-    elsif  Coin.config(iso_code, @config['ENV'])
-      Wallet.create(rpc_user:        Coin.config(iso_code, @config['ENV'])[:rpc_user],
-                    rpc_password:    Coin.config(iso_code, @config['ENV'])[:rpc_password],
-                    rpc_host:        Coin.config(iso_code, @config['ENV'])[:rpc_host],
-                    rpc_port:        Coin.config(iso_code, @config['ENV'])[:rpc_port],
-                    rpc_ssl:         Coin.config(iso_code, @config['ENV'])[:rpc_ssl],
+    elsif  Coin.config(iso_code)
+      Wallet.create(rpc_user:        Coin.config(iso_code)[:rpc_user],
+                    rpc_password:    Coin.config(iso_code)[:rpc_password],
+                    rpc_host:        Coin.config(iso_code)[:rpc_host],
+                    rpc_port:        Coin.config(iso_code)[:rpc_port],
+                    rpc_ssl:         Coin.config(iso_code)[:rpc_ssl],
                     iso_code:        iso_code,
-                    wallet_password: Coin.config(iso_code, @config['ENV'])[:wallet_password],
-                    confirmations:   Coin.config(iso_code, @config['ENV'])[:confirmations]
+                    wallet_password: Coin.config(iso_code)[:wallet_password],
+                    confirmations:   Coin.config(iso_code)[:confirmations]
                    )
     else
       return {'error' => 'No configuration found for specified iso code.'}

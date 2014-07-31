@@ -33,11 +33,15 @@ module RubyWallet
     end
 
     def deposits
-      transactions.where(category: "deposit")
+      transactions.where(category: "receive")
+    end
+
+    def confirmed_deposits
+      deposits.where(confirmed: true)
     end
 
     def withdrawals
-      transactions.where(category: "withdrawal")
+      transactions.where(category: "send")
     end
 
     def withdraw(address, amount)
@@ -58,22 +62,20 @@ module RubyWallet
       update_confirmed_balance
     end
 
-    protected
+    def update_unconfirmed_balance
+      balance = BigDecimal(0)
+      balance += deposits.reduce(0){|sum, deposit| sum + deposit.amount}
+      balance -= withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
+      balance += transfers.reduce(0){|sum, transfer| sum + transfer.amount}
+      update_attributes(unconfirmed_balance: balance)
+    end
 
-      def update_unconfirmed_balance
-        balance = BigDecimal(0)
-        balance += deposits.reduce(0){|sum, deposit| sum + deposit.amount}
-        balance += withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
-        balance += transfers.reduce(0){|sum, transfer| sum + transfer.amount}
-        update_attributes(unconfirmed_balance: balance)
-      end
-  
-      def update_confirmed_balance
-        balance = BigDecimal(0)
-        balance += deposits.where(confirmations: wallet.confirmations).reduce(0){|sum, deposit| sum + deposit.amount}
-        balance += withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
-        balance += transfers.reduce(0){|sum, transfer| sum + transfer.amount}
-        update_attributes(confirmed_balance: balance)
-      end
+    def update_confirmed_balance
+      balance = BigDecimal.new(0)
+      balance += confirmed_deposits.reduce(0){|sum, deposit| sum + deposit.amount}
+      balance -= withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
+      balance += transfers.reduce(0){|sum, transfer| sum + transfer.amount}
+      update_attributes(confirmed_balance: balance)
+    end
   end
 end

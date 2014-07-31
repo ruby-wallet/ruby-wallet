@@ -69,7 +69,7 @@ describe RubyWallet::Wallet do
         end
       end
   
-      service "label?" do
+      service "label" do
         it "connects to Coind API to return account label for generated address" do
           expect(result("validateaddress", @generated_address)).to eq($account_label)
         end
@@ -109,21 +109,22 @@ describe RubyWallet::Wallet do
       FakeWeb.register_uri(:post, "http://#{$coin['rpc_user']}:#{$coin['rpc_password']}@#{$coin['rpc_host']}:#{$coin['rpc_port']}", :response => fixture('listtransactions'))
       subject.sync
       first_checked_count = subject.transaction_checked_count
-      expect(subject.transactions.count).to eq(subject.account?($account_label).deposit_ids.count)
+      expect(subject.transactions.count).to eq(subject.account($account_label).deposit_ids.count)
       subject.sync
       expect(first_checked_count).to eq(subject.transaction_checked_count)
-      expect(subject.transactions.count).to eq(subject.account?($account_label).deposit_ids.count)
+      expect(subject.transactions.count).to eq(subject.account($account_label).deposit_ids.count)
     end
 
     it "connects to Coind API to obtain updates on a transaction" do
       FakeWeb.register_uri(:post, "http://#{$coin['rpc_user']}:#{$coin['rpc_password']}@#{$coin['rpc_host']}:#{$coin['rpc_port']}", :response => fixture('gettransaction'))
-      transaction = subject.transaction?("eb8cd2a634b36186cb7c548d297abbb9005c9e9467210138375e1241f5a06f6c")
+      transaction = subject.transaction("eb8cd2a634b36186cb7c548d297abbb9005c9e9467210138375e1241f5a06f6c")
       expect(transaction.confirmations).to be > 10
       transaction.update_attributes(confirmations: 0, confirmed: false)
       subject.sync_transaction("eb8cd2a634b36186cb7c548d297abbb9005c9e9467210138375e1241f5a06f6c")
-      transaction = subject.transaction?("eb8cd2a634b36186cb7c548d297abbb9005c9e9467210138375e1241f5a06f6c")
+      transaction = subject.transaction("eb8cd2a634b36186cb7c548d297abbb9005c9e9467210138375e1241f5a06f6c")
       expect(transaction.confirmations).to be > 10
       expect(transaction.confirmed).to be true
+      subject.account($account_label).update_balances
     end
  
     context "wallet embeds many transactions which have helper methods" do
@@ -132,20 +133,42 @@ describe RubyWallet::Wallet do
       it "returns a Time object when timestamp is called on embedded transaction" do
         expect(transaction.timestamp).to_not be nil
       end
-  
-      it "returns true if confirmed" do
-        p transaction.to_json
-        expect(transaction.confirmed?).to be true
-      end
  
       it "returns false when unconfirmed" do
         transaction.update_attributes(confirmations: 0, confirmed: false)
         expect(transaction.confirmed?).to be false
       end
+ 
+      it "returns true if confirmed" do
+        transaction.update_attributes(confirmations: 1400)
+        transaction.confirm
+        expect(transaction.confirmed?).to be true
+      end
+ 
     end
   end
 
-  it "transfers coins from one account to another" do
+  context "account management" do
+    let(:sender_account) { subject.account($account_label) } 
+    let(:recipient_account) { subject.create_account("recipient") }
 
+    it "transfers coins from one account to another" do
+      subject.confirmed_balance = BigDecimal.new("38411.97369153") # Because we can't make more than 1 API call per method because fakeweb
+      sender_starting_balance = sender_account.confirmed_balance
+      subject.transfer(sender_account, recipient_account, 250)
+
+      expect(subject.transfers.count).to eq(2)
+      expect(sender_account.transfers.reduce(0){|sum, transfer| sum + transfer.amount}).to eq(BigDecimal.new(-250))
+      expect(recipient_account.transfers.reduce(0){|sum, transfer| sum + transfer.amount}).to eq(250)
+      expect(sender_account.transfers.count).to eq(1)
+      expect(recipient_account.transfers.count).to eq(1)
+      expect(recipient_account.confirmed_balance).to eq(250)
+      expect(sender_starting_balance).to eq((sender_account.confirmed_balance + BigDecimal.new(250)))
+    end
+
+    it "returns the total received for the account" do
+      FakeWeb.register_uri(:post, "http://#{$coin['rpc_user']}:#{$coin['rpc_password']}@#{$coin['rpc_host']}:#{$coin['rpc_port']}", :response => fixture('getreceivedbylabel'))
+      expect(subject.total_received($account_label)).to eq(24029.43552541) # Different from others because I customized the transactions fixture to include more transactions.
+    end
   end
 end

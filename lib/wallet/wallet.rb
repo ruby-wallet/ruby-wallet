@@ -35,34 +35,39 @@ module RubyWallet
       end
     end
 
-    def account?(label)
+
+    def update_balances
+      update_attributes(unconfirmed_balance: coind.getbalance(0),
+                        confirmed_balance:   coind.getbalance(confirmations)
+                       )
+    end
+
+    def account(label)
       accounts.find_by(label: label)
     end
 
-    def transaction?(transaction_id)
+    def transaction(transaction_id)
       transactions.find_by(transaction_id: transaction_id)
     end
 
     def transfer(sender, recipient, amount, comment = nil)
-      if amount > 0 and sender.confirmed_balance >= amount and confirmed_balance >= amount and accounts.find(recipient.id)
-        # Subtract from the sender account
-        create_transfer(sender_label:    sender.label,
-                        sender_id:       sender.id,
-                        recipient_label: recipient.label,
-                        recipient_id:    recipeint.id,
-                        category:        "send",
-                        amount:          -amount,
-                        comment:         comment
-                       )
-        # Add to the recipient account 
-        create_transfer(sender_label:    sender.label,
-                        sender_id:       sender.id,
-                        recipient_label: recipient.label,
-                        recipient_id:    recipeint.id,
-                        category:        "receive",
-                        amount:          amount,
-                        comment:         comment
-                       )
+      if amount > 0 and sender.confirmed_balance >= amount and confirmed_balance >= amount and accounts.find(recipient.id).persisted? and accounts.find(sender.id).persisted?
+        transfers.create(sender_label:    sender.label,
+                         sender_id:       sender.id,
+                         recipient_label: recipient.label,
+                         recipient_id:    recipient.id,
+                         category:        "send",
+                         amount:          -amount,
+                         comment:         comment
+                        )
+        transfers.create(sender_label:    sender.label,
+                         sender_id:       sender.id,
+                         recipient_label: recipient.label,
+                         recipient_id:    recipient.id,
+                         category:        "receive",
+                         amount:          amount,
+                         comment:         comment
+                        )
         sender.update_balances
         recipient.update_balances
       else
@@ -94,7 +99,7 @@ module RubyWallet
       coind.getnewaddress(label)
     end
 
-    def label?(address)
+    def label(address)
       response = validate_address(address)
       if !response["account"].nil?
         response["account"]
@@ -103,6 +108,10 @@ module RubyWallet
       else
         response
       end
+    end
+
+    def total_received(label)
+      coind.getreceivedbylabel(label)
     end
 
     def own_address?(address)
@@ -134,9 +143,9 @@ module RubyWallet
         wallet_transactions[transaction_checked_count..wallet_transactions.length].each do |transaction|
           update_attributes(transaction_checked_count: transaction_checked_count + 1)
           if ["send", "receive"].include?(transaction["category"])
-            account = account?(transaction["account"])
+            account = account(transaction["account"])
             if account
-              new_transaction = transactions.create(account_label:  transaction["account"],
+              new_transaction = transactions.create(label:  transaction["account"],
                                                     transaction_id: transaction["txid"],
                                                     address:        transaction["address"],
                                                     amount:         BigDecimal.new(transaction["amount"].to_s),
@@ -146,22 +155,24 @@ module RubyWallet
                                                     category:       transaction["category"]
                                                    )
               if transaction["category"] == "receive"
-                account.update_attributes(deposit_ids: account.deposit_ids.push(transaction["txid"]).uniq, total_received: total_received?(account.label))
+                account.update_attributes(deposit_ids: account.deposit_ids.push(transaction["txid"]).uniq, total_received: total_received(account.label))
                 if new_transaction.confirmations >= confirmations
                   new_transaction.confirm
+                  account.update_confirmed_balance
+                else
+                  account.update_unconfirmed_balance
                 end
               end
-              account.update_balances
             end
           end
         end
       end
       self.transactions.where(confirmed: false, category: "receive").each do |transaction|
         wallet_transaction = coind.get_transaction(transaction.transaction_id)
-        p wallet_transaction.to_json
         transaction.update_attributes(confirmations: wallet_transaction['confirmations'])
         if transaction.confirmations >= confirmations
           transaction.confirm
+          account.update_confirmed_balance
         end
       end
       update_balances
@@ -169,7 +180,7 @@ module RubyWallet
     end 
 
     def sync_transaction(transaction_id)
-      transaction = transaction?(transaction_id)
+      transaction = transaction(transaction_id)
       if transaction
         wallet_transaction = coind.get_transaction(transaction_id)
         unless transaction.confirmed?
@@ -205,19 +216,9 @@ module RubyWallet
         coind.validateaddress(address)
       end
 
-      def update_balances
-        update_attributes(unconfirmed_balance: coind.balance(0),
-                          confirmed_balance:   coind.balance(confirmations)
-                         )
-      end
-
       def reset_transactions
         transactions.destroy
         update_attributes(transction_checked_count: 0)
-      end
-
-      def total_received?(label)
-        coind.getreceivedbylabel(label)
       end
 
   end

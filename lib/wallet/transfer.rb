@@ -16,7 +16,7 @@ module RubyWallet
     embedded_in :wallet
 
     validates :category, format: { with: /\A(send|receive)\z/ }
-    validates :amount, format: { with: /\A\d{0,8}(\.\d{1,8}|)\z/ }
+    validates :amount, format: { with: /\A(-|)\d{0,8}(\.\d{1,8}|)\z/ }
     validate  :amount_check
 
     def sender
@@ -31,9 +31,9 @@ module RubyWallet
 
       def amount_check
         if category == "send"
-          amount < 0
+          amount < BigDecimal.new(0)
         else
-          amount > 0
+          amount > BigDecimal.new(0)
         end
       end
 

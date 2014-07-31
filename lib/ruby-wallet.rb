@@ -37,7 +37,7 @@ module RubyWallet
   require 'wallet/transfer'
 
   def self.connect(iso_code)
-    Wallet.all.destroy
+    #Wallet.all.destroy
     wallet = Wallet.find_by(iso_code: iso_code)
     if wallet
       wallet

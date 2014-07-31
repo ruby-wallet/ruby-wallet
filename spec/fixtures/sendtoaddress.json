@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Date: Wed, 30 Jul 2014 16:52:28 +0000
+Connection: keep-alive
+Content-Length: 107
+Content-Type: application/json
+Server: blackcoin-json-rpc/v1.1.0.1-10-g76a2fe8
+
+{"result":"b64345d4dd2d71f34a5968f9f28c5a36a2069e20d85d772482aebdb9e040e9ae","error":null,"id":"curltest"}

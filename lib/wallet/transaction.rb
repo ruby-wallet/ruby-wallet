@@ -11,7 +11,7 @@ module RubyWallet
     field :address,               type: String
     field :amount,                type: BigDecimal
     field :confirmations,         type: Integer
-    field :confirmed,             type: Boolean
+    field :confirmed,             type: Boolean,    default: false
 
     field :occurred_at,           type: Time
     field :received_at,           type: Time
@@ -23,24 +23,24 @@ module RubyWallet
     validates :amount, format: { with: /\A\d{0,8}(\.\d{1,8}|)\z/ }
 
     def account
-      self.wallet.accounts.find(account_id)
+      wallet.accounts.find(account_id)
     end
 
     def confirm
-      if self.confirmations >= self.wallet.confirmations
-        self.update_attributes(confirmed: true)
+      if confirmations >= wallet.confirmations
+        update_attributes(confirmed: true)
       end
     end
 
     def confirmed?
-      self.confirmed
+      confirmed
     end
 
     def timestamp
       if occurred_at
-        self.occured_at
+        occurred_at
       else
-        self.received_at
+        received_at
       end
     end
 

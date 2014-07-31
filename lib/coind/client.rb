@@ -78,16 +78,6 @@ class Coind::Client
 
   # Returns an array of objects containing:
   #
-  #   :account       => the label of the receiving addresses
-  #   :amount        => total amount received by addresses with this label
-  #   :confirmations => number of confirmations of the most recent transaction included
-  #
-  def listreceivedbylabel(minconf = 1, includeempty = false)
-    @api.request 'listreceivedbyaccount', minconf, includeempty
-  end
-
-  # Returns an array of objects containing:
-  #
   #   :address       => receiving address
   #   :account       => the label of the receiving address
   #   :amount        => total amount received by the address
@@ -197,6 +187,7 @@ class Coind::Client
   alias lock walletlock
   alias label_address getlabeladdress
   alias addresses_by_label getaddressesbylabel
+  alias get_transaction gettransaction
   alias balance getbalance
   alias block_count getblockcount
   alias connection_count getconnectioncount
@@ -206,7 +197,6 @@ class Coind::Client
   alias received_by_address getreceivedbyaddress
   alias transaction gettransaction
   alias labels listlabels
-  alias list_received_by_label listreceivedbylabel
   alias list_received_by_address listreceivedbyaddress
   alias transactions listtransactions
   alias list_transactions listtransactions

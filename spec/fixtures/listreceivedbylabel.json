@@ -1,0 +1,8 @@
+HTTP/1.1 500 Internal Server Error
+Date: Wed, 30 Jul 2014 22:01:57 +0000
+Connection: close
+Content-Length: 96
+Content-Type: application/json
+Server: blackcoin-json-rpc/v1.1.0.1-10-g76a2fe8
+
+{"result":null,"error":{"code":-1,"message":"value is type str, expected int"},"id":"curltest"}

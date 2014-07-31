@@ -20,20 +20,20 @@ module RubyWallet
     validate  :amount_check
 
     def sender
-      self.wallet.accounts.find(self.sender_id)
+      wallet.accounts.find(self.sender_id)
     end
 
     def recipient
-      self.wallet.accounts.find(self.recipient_id)
+      wallet.accounts.find(self.recipient_id)
     end
 
     protected
 
       def amount_check
-        if self.category == "send"
-          self.amount < 0
+        if category == "send"
+          amount < 0
         else
-          self.amount > 0
+          amount > 0
         end
       end
 

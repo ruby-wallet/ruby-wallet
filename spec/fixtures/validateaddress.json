@@ -1,8 +1,8 @@
 HTTP/1.1 200 OK
-Date: Wed, 30 Jul 2014 14:03:26 +0000
+Date: Wed, 30 Jul 2014 16:44:34 +0000
 Connection: keep-alive
-Content-Length: 119
+Content-Length: 250
 Content-Type: application/json
 Server: blackcoin-json-rpc/v1.1.0.1-10-g76a2fe8
 
-{"result":{"isvalid":true,"address":"B98Z9DEnTtbYMWZF33iPKjF2LqQa1QUbvq","ismine":false},"error":null,"id":"curltest"}
+{"result":{"isvalid":true,"address":"B7ZkMHMM5phEDT3HJzhgdg89vqQyJTD17n","ismine":true,"isscript":false,"pubkey":"0392d1f2ee28725fa71eb4e1d1e9c296b573f11055b7755ecf756ce71910a82c3e","iscompressed":true,"account":"test"},"error":null,"id":"curltest"}

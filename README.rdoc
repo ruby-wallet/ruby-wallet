@@ -123,7 +123,7 @@ A transaction exists on the blockchain, are aggregated from the coind client and
   transaction.account_label
   transaction.account_id                  # returns internal account MongoDB _id
 
-  transaction.category                    # returns either deposit or withdrawal
+  transaction.category                    # returns either "send" or "receive"
   transaction.address                     
   transaction.amount
   transaction.confirmations
@@ -161,7 +161,7 @@ A transfer exists only within MongoDB account management abstraction in ruby-wal
 
 Implement easy way to utilize  multi-signatures, automatically prune slow nodes from connection list, use the raw transaction API to increase efficency.
 
-Also considering building out a sinatra API for the higher levels of the stack to communicate with. This would allow this abstraction to be more flexible in stack placement.
+Considering building out a sinatra API for the higher levels of the stack to communicate with. This would allow this abstraction to be more flexible in stack placement. Currently you can switch out coind for something like btcd, it would be nice to be able to easily use something other than a ruby program higher in the stack.
 
 Donate to the ruby-wallet project:
 1LJtuko15Ck1gq5H9K24iGnA1yvtcBMYa4

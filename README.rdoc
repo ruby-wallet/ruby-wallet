@@ -123,7 +123,7 @@ A transaction exists on the blockchain, are aggregated from the coind client and
   transaction.account_label
   transaction.account_id                  # returns internal account MongoDB _id
 
-  transaction.category                    # returns either deposit or withdrawal
+  transaction.category                    # returns either "send" or "receive"
   transaction.address                     
   transaction.amount
   transaction.confirmations

@@ -31,10 +31,13 @@ module RubyWallet
 
     def encrypt
       if coind.encrypt(wallet_password)
-        update_attributes(wallet_encrypted: true)
+        update_attributes(encrypted: true)
       end
     end
 
+    def encrypted?
+      encrypted
+    end
 
     def update_balances
       update_attributes(unconfirmed_balance: coind.getbalance(0),
@@ -78,6 +81,7 @@ module RubyWallet
     def withdraw(account, address, amount)
       if account.confirmed_balance >= amount and confirmed_balance >= amount and valid_address?(address)
         # Transaction fees should be handled higher in the stack
+        unlock if encrypted?
         txid = coind.sendtoaddress(address, amount, account.label)
         if txid['error'].nil?
           account.update_attributes(withdrawal_ids: account.withdrawal_ids.push(txid).uniq)
@@ -92,10 +96,12 @@ module RubyWallet
     end
 
     def create_account(label)
+      unlock if encrypted?
       accounts.create(label: label)
     end
 
     def generate_address(label)
+      unlock if encrypted?
       coind.getnewaddress(label)
     end
 
@@ -204,12 +210,12 @@ module RubyWallet
                           :rpc_ssl =>      self.rpc_ssl})
       end
 
-      def unlock(timeout = 20, &block)
+      def unlock(timeout = 20) #, &block)
         coind.unlock(self.wallet_password, timeout)
-        if block
-          block.call
-          coind.lock
-        end
+        #if block
+        #  block.call
+        #  coind.lock
+        #end
       end
   
       def validate_address(address)

@@ -80,11 +80,11 @@ A withdrawal is only possible from an account and checks against available balan
 
 == Wallet Encryption
 
-Encrypting your wallet with the password supplied in the config file will enable encryption. Before every action, an unlock command will be used to unlock and automatically relock your wallet between protected actions. If your wallet is encrypted prior to setup, you must manually set the encrypted attribute to true. (Not fully implemented)
+Encrypting your wallet with the password supplied in the config file will enable encryption. The encryption password is stored encrypted in the database, and before every action, an unlock command will be used to unlock and automatically relock your wallet between protected actions. If your wallet is encrypted prior to setup, you must manually set the encrypted attribute to true.
 
   wallet.encrypt
 
-  wallet.encrypted
+  wallet.encrypted?
   # => true
 
 == Wallet Accounts

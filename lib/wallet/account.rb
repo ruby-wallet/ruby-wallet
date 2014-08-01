@@ -21,7 +21,8 @@ module RubyWallet
 
     def generate_address
       address = wallet.generate_address(label)
-      update_attributes(addresses: addresses.push(address))
+      update_attributes(addresses: addresses.push(address).uniq)
+      addresses.last
     end
 
     def transfers

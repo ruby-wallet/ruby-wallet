@@ -3,15 +3,15 @@ module RubyWallet
     include Mongoid::Document
 
     field :transaction_id,        type: String
-
     field :account_label,         type: String
-    field :account_id,            type: String
 
     field :category,              type: String
     field :address,               type: String
     field :amount,                type: BigDecimal
     field :confirmations,         type: Integer
     field :confirmed,             type: Boolean,    default: false
+
+    field :comment,               type: String
 
     field :occurred_at,           type: Time
     field :received_at,           type: Time
@@ -23,7 +23,7 @@ module RubyWallet
     validates :amount, format: { with: /\A\d{0,8}(\.\d{1,8}|)\z/ }
 
     def account
-      wallet.accounts.find(account_id)
+      wallet.account(account_label)
     end
 
     def confirm
@@ -43,6 +43,5 @@ module RubyWallet
         received_at
       end
     end
-
   end
 end

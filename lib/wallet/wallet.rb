@@ -170,7 +170,8 @@ module RubyWallet
                                                     confirmations:  transaction["confirmations"],
                                                     occurred_at:    (Time.at(transaction["time"]) if !transaction["time"].nil?),
                                                     received_at:    (Time.at(transaction["timereceived"]) if !transaction["timereceived"].nil?),
-                                                    category:       transaction["category"]
+                                                    category:       transaction["category"],
+                                                    comment:        transaction["comment"]
                                                    )
               if transaction["category"] == "receive"
                 account.update_attributes(deposit_ids: account.deposit_ids.push(transaction["txid"]).uniq, total_received: total_received(account.label))

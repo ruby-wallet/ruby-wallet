@@ -1,7 +1,7 @@
 module RubyWallet
   class Wallet
     include Mongoid::Document
-    #include Mongoid::Paranoia
+    include Mongoid::Paranoia
     include Coind
 
     field :iso_code,                  type: String
@@ -28,6 +28,18 @@ module RubyWallet
     embeds_many :transfers
 
     validates_uniqueness_of :iso_code
+
+    index({"transactions.transaction_id" => 1}, {unique: true, sparse: true})
+    index({"accounts.label" => 1}, {unique: true, sparse: true})
+
+    def coind_online?
+      begin
+        coind.balance
+        return true
+      rescue
+        return false
+      end
+    end
 
     def encrypt
       if coind.encrypt(wallet_password)

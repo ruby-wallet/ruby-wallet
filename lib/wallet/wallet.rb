@@ -91,27 +91,19 @@ module RubyWallet
     end
 
     def withdraw(account, address, amount)
-      p "acc conf bal: " + account.confirmed_balance.class.to_s
-      p "wal conf bal: " + confirmed_balance.class.to_s
-      p "amount: " + amount.class.to_s
-      p "valid address? " + valid_address?(address).to_s
-      p "conf more amount? " + (account.confirmed_balance >= amount).to_s
-      p "walconf more amount? " + (confirmed_balance >= amount).to_s
-
       if account.confirmed_balance >= amount and confirmed_balance >= amount and valid_address?(address)
         unlock if encrypted?
-        txid = coind.sendtoaddress(address, amount.to_s, account.label)
+        txid = coind.sendtoaddress(address, amount.to_f, account.label)
         p txid.to_s
         if txid['error'].nil?
           account.update_attributes(withdrawal_ids: account.withdrawal_ids.push(txid).uniq)
           account.update_balances
+          sync
           txid
         else
-          p "found error hash"
           false
         end
       else
-        p "failed validation"
         false
       end
     end
@@ -173,27 +165,29 @@ module RubyWallet
       if wallet_transactions and transaction_checked_count != wallet_transactions.length
         wallet_transactions[transaction_checked_count..wallet_transactions.length].each do |transaction|
           update_attributes(transaction_checked_count: transaction_checked_count + 1)
-          if ["send", "receive"].include?(transaction["category"])
+          if "receive"
             account = accounts.find_by(:addresses.in => [transaction["address"]])
-            if account
-              new_transaction = transactions.create(account_label:  account.label,
-                                                    transaction_id: transaction["txid"],
-                                                    address:        transaction["address"],
-                                                    amount:         BigDecimal.new(transaction["amount"].to_s),
-                                                    confirmations:  transaction["confirmations"],
-                                                    occurred_at:    (Time.at(transaction["time"]) if !transaction["time"].nil?),
-                                                    received_at:    (Time.at(transaction["timereceived"]) if !transaction["timereceived"].nil?),
-                                                    category:       transaction["category"],
-                                                    comment:        transaction["comment"]
-                                                   )
-              if transaction["category"] == "receive"
-                account.update_attributes(deposit_ids: account.deposit_ids.push(transaction["txid"]).uniq, total_received: total_received(account.label))
-                if new_transaction.confirmations >= confirmations
-                  new_transaction.confirm
-                  account.update_confirmed_balance
-                else
-                  account.update_unconfirmed_balance
-                end
+          elsif "send"
+            account = accounts.find_by(label: transaction["comment"])
+          end
+          if account
+            new_transaction = transactions.create(account_label:  account.label,
+                                                  transaction_id: transaction["txid"],
+                                                  address:        transaction["address"],
+                                                  amount:         BigDecimal.new(transaction["amount"].to_s),
+                                                  confirmations:  transaction["confirmations"],
+                                                  occurred_at:    (Time.at(transaction["time"]) if !transaction["time"].nil?),
+                                                  received_at:    (Time.at(transaction["timereceived"]) if !transaction["timereceived"].nil?),
+                                                  category:       transaction["category"],
+                                                  comment:        transaction["comment"]
+                                                 )
+            if transaction["category"] == "receive"
+              account.update_attributes(deposit_ids: account.deposit_ids.push(transaction["txid"]).uniq, total_received: total_received(account.label))
+              if new_transaction.confirmations >= confirmations
+                new_transaction.confirm
+                account.update_confirmed_balance
+              else
+                account.update_unconfirmed_balance
               end
             end
           end

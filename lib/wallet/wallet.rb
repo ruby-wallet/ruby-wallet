@@ -91,18 +91,27 @@ module RubyWallet
     end
 
     def withdraw(account, address, amount)
+      p "acc conf bal: " + account.confirmed_balance.class.to_s
+      p "wal conf bal: " + confirmed_balance.class.to_s
+      p "amount: " + amount.class.to_s
+      p "valid address? " + valid_address?(address).to_s
+      p "conf more amount? " + (account.confirmed_balance >= amount).to_s
+      p "walconf more amount? " + (confirmed_balance >= amount).to_s
+
       if account.confirmed_balance >= amount and confirmed_balance >= amount and valid_address?(address)
-        # Transaction fees should be handled higher in the stack
         unlock if encrypted?
-        txid = coind.sendtoaddress(address, amount, account.label)
+        txid = coind.sendtoaddress(address, amount.to_s, account.label)
+        p txid.to_s
         if txid['error'].nil?
           account.update_attributes(withdrawal_ids: account.withdrawal_ids.push(txid).uniq)
           account.update_balances
           txid
         else
+          p "found error hash"
           false
         end
       else
+        p "failed validation"
         false
       end
     end

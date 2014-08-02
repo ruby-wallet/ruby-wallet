@@ -19,8 +19,9 @@ module RubyWallet
     embedded_in :wallet
 
     validates_uniqueness_of :transaction_id
-    validates_numericality_of :amount, greater_than: 0
-    validates :amount, format: { with: /\A\d{0,8}(\.\d{1,8}|)\z/ }
+    validates :category, format: { with: /\A(send|receive)\z/ }
+    validates :amount, format: { with: /\A(-|)\d{0,8}(\.\d{1,8}|)\z/ }
+    validate  :amount_check
 
     def account
       wallet.account(account_label)
@@ -43,5 +44,15 @@ module RubyWallet
         received_at
       end
     end
+
+    protected
+
+      def amount_check
+        if category == "send"
+          amount > BigDecimal.new(0)
+        else
+          amount < BigDecimal.new(0)
+        end
+      end
   end
 end

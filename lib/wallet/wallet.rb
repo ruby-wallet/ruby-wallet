@@ -165,9 +165,9 @@ module RubyWallet
       if wallet_transactions and transaction_checked_count != wallet_transactions.length
         wallet_transactions[transaction_checked_count..wallet_transactions.length].each do |transaction|
           update_attributes(transaction_checked_count: transaction_checked_count + 1)
-          if ransaction["category"] == "receive"
+          if transaction["category"] == "receive"
             account = accounts.find_by(:addresses.in => [transaction["address"]])
-          elsif ransaction["category"] == "send"
+          elsif transaction["category"] == "send"
             account = accounts.find_by(label: transaction["comment"])
           end
           if account

@@ -66,7 +66,7 @@ module RubyWallet
     def update_unconfirmed_balance
       balance = BigDecimal(0)
       balance += deposits.reduce(0){|sum, deposit| sum + deposit.amount}
-      balance -= withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
+      balance += withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
       balance += transfers.reduce(0){|sum, transfer| sum + transfer.amount}
       update_attributes(unconfirmed_balance: balance)
     end
@@ -74,7 +74,7 @@ module RubyWallet
     def update_confirmed_balance
       balance = BigDecimal.new(0)
       balance += confirmed_deposits.reduce(0){|sum, deposit| sum + deposit.amount}
-      balance -= withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
+      balance += withdrawals.reduce(0){|sum, withdrawal| sum + withdrawal.amount}
       balance += transfers.reduce(0){|sum, transfer| sum + transfer.amount}
       update_attributes(confirmed_balance: balance)
     end

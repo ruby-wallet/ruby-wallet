@@ -30,7 +30,7 @@ module RubyWallet
     end
 
     def transactions
-      wallet.transactions.where(label: label)
+      wallet.transactions.where(account_label: label)
     end
 
     def deposits

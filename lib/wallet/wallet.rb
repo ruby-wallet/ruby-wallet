@@ -109,7 +109,11 @@ module RubyWallet
 
     def create_account(label)
       unlock if encrypted?
-      accounts.create(label: label)
+      if account(label)
+        account(label)
+      else
+        accounts.create!(label: label)
+      end
     end
 
     def generate_address(label)
@@ -161,9 +165,9 @@ module RubyWallet
         wallet_transactions[transaction_checked_count..wallet_transactions.length].each do |transaction|
           update_attributes(transaction_checked_count: transaction_checked_count + 1)
           if ["send", "receive"].include?(transaction["category"])
-            account = account(transaction["account"])
+            account = accounts.find_by(:addresses.in => [transaction["address"]])
             if account
-              new_transaction = transactions.create(label:  transaction["account"],
+              new_transaction = transactions.create(account_label:  account.label,
                                                     transaction_id: transaction["txid"],
                                                     address:        transaction["address"],
                                                     amount:         BigDecimal.new(transaction["amount"].to_s),

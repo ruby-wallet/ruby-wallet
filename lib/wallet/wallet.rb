@@ -1,7 +1,7 @@
 module RubyWallet
   class Wallet
     include Mongoid::Document
-    include Mongoid::Paranoia
+    #include Mongoid::Paranoia
     include Coind
 
     field :iso_code,                  type: String
@@ -177,8 +177,8 @@ module RubyWallet
                                                   address:        transaction["address"],
                                                   amount:         BigDecimal.new(transaction["amount"].to_s),
                                                   confirmations:  transaction["confirmations"],
-                                                  occurred_at:    (Time.at(transaction["time"]) if !transaction["time"].nil?),
-                                                  received_at:    (Time.at(transaction["timereceived"]) if !transaction["timereceived"].nil?),
+                                                  occurred_at:    (Time.at(transaction["time"].utc) if !transaction["time"].nil?),
+                                                  received_at:    (Time.at(transaction["timereceived"].utc) if !transaction["timereceived"].nil?),
                                                   category:       transaction["category"],
                                                   comment:        transaction["comment"]
                                                  )

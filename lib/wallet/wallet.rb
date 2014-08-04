@@ -35,7 +35,7 @@ module RubyWallet
 
     def coind_online?
       begin
-        coind.getinfo
+        coind.getbalance
         return true
       rescue
         return false

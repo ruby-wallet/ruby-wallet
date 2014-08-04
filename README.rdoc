@@ -164,6 +164,28 @@ Implement easy way to utilize  multi-signatures, automatically prune slow nodes 
 Build out a sinatra API for the higher levels of the stack to communicate with. This would allow this abstraction to be more flexible in stack placement. Currently you can switch out coind for something like btcd, it would be nice to be able to easily use something other than a ruby program higher in the stack.
 
 Donate to the ruby-wallet project:
+
+BTC
 1LJtuko15Ck1gq5H9K24iGnA1yvtcBMYa4
 
+BLK
+BQJMnqMBY3qRzu9HQFvXC4UVprtPjMvsZM
 
+License
+-------
+
+RubyWallet - Ruby Coind Wallet Abstraction
+Copyright (C) 2014 Blackwave Labs
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

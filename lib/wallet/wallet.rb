@@ -28,13 +28,14 @@ module RubyWallet
     embeds_many :transfers
 
     validates_uniqueness_of :iso_code
+    validates_uniqueness_of :rpc_user
 
     index({"transactions.transaction_id" => 1}, {unique: true, sparse: true})
     index({"accounts.label" => 1}, {unique: true, sparse: true})
 
     def coind_online?
       begin
-        coind.balance
+        coind.getinfo
         return true
       rescue
         return false

@@ -2,5 +2,4 @@
 # Rename this file to "config.yml" and make sure it's listed in your
 # .gitignore for safety.
 
-ENV: "development"
 ENCRYPTION_KEY: "secret"

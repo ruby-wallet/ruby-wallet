@@ -171,8 +171,7 @@ BTC
 BLK
 BQJMnqMBY3qRzu9HQFvXC4UVprtPjMvsZM
 
-License
--------
+== License
 
 RubyWallet - Ruby Coind Wallet Abstraction
 Copyright (C) 2014 Blackwave Labs

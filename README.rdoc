@@ -17,6 +17,8 @@ Copy and configure the gem database, encryption key for passwords, and coin(s) t
   cp config.sample.yml config.yml
   cp coins.sample.yml coins.yml
 
+Modify the env.rb file to match your environment.
+
 Compile the gem and install it locally
 
   gem build ruby-wallet.gemspec

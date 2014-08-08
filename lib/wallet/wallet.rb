@@ -12,6 +12,8 @@ module RubyWallet
     field :rpc_port,                  type: Integer
     field :rpc_ssl,                   type: Boolean
 
+    field :rpc_online,                type: Boolean
+
     field :encrypted,                 type: Boolean
     field :wallet_password,           type: Mongoid::EncryptedString
 
@@ -36,9 +38,11 @@ module RubyWallet
     def coind_online?
       begin
         coind.getbalance
-        return true
+        update_attributes(rpc_online: true)
+        rpc_online
       rescue
-        return false
+        update_attributes(rpc_online: false)
+        rpc_online
       end
     end
 
@@ -53,9 +57,11 @@ module RubyWallet
     end
 
     def update_balances
-      update_attributes(unconfirmed_balance: coind.getbalance(0),
-                        confirmed_balance:   coind.getbalance(confirmations)
-                       )
+      if coind_online?
+        update_attributes(unconfirmed_balance: coind.getbalance(0),
+                          confirmed_balance:   coind.getbalance(confirmations)
+                         )
+      end
     end
 
     def account(label)
@@ -67,7 +73,7 @@ module RubyWallet
     end
 
     def transfer(sender, recipient, amount, comment = nil)
-      if amount > 0 and sender.confirmed_balance >= amount and confirmed_balance >= amount and accounts.find(recipient.id).persisted? and accounts.find(sender.id).persisted?
+      if amount > BigDecimal.new(0) and sender.confirmed_balance >= amount and confirmed_balance >= amount and accounts.find(recipient.id).persisted? and accounts.find(sender.id).persisted?
         transfers.create(sender_label:    sender.label,
                          sender_id:       sender.id,
                          recipient_label: recipient.label,
@@ -161,49 +167,51 @@ module RubyWallet
     end
 
     def sync
-      wallet_transactions = coind.listtransactions("*", 99999)
-      reset_transactions if transaction_checked_count > wallet_transactions.length
-      if wallet_transactions and transaction_checked_count != wallet_transactions.length
-        wallet_transactions[transaction_checked_count..wallet_transactions.length].each do |transaction|
-          update_attributes(transaction_checked_count: transaction_checked_count + 1)
-          if transaction["category"] == "receive"
-            account = accounts.find_by(:addresses.in => [transaction["address"]])
-          elsif transaction["category"] == "send"
-            account = accounts.find_by(label: transaction["comment"])
-          end
-          if account
-            new_transaction = transactions.create(account_label:  account.label,
-                                                  transaction_id: transaction["txid"],
-                                                  address:        transaction["address"],
-                                                  amount:         BigDecimal.new(transaction["amount"].to_s),
-                                                  confirmations:  transaction["confirmations"],
-                                                  occurred_at:    (Time.at(transaction["time"].utc) if !transaction["time"].nil?),
-                                                  received_at:    (Time.at(transaction["timereceived"].utc) if !transaction["timereceived"].nil?),
-                                                  category:       transaction["category"],
-                                                  comment:        transaction["comment"]
-                                                 )
+      if coind_online?
+        wallet_transactions = coind.listtransactions("*", 99999)
+        reset_transactions if transaction_checked_count > wallet_transactions.length
+        if wallet_transactions and transaction_checked_count != wallet_transactions.length and wallet_transactions[transaction_checked_count..wallet_transactions.length] > 0
+          wallet_transactions[transaction_checked_count..wallet_transactions.length].each do |transaction|
+            update_attributes(transaction_checked_count: transaction_checked_count + 1)
             if transaction["category"] == "receive"
-              account.update_attributes(deposit_ids: account.deposit_ids.push(transaction["txid"]).uniq, total_received: total_received(account.label))
-              if new_transaction.confirmations >= confirmations
-                new_transaction.confirm
-                account.update_confirmed_balance
-              else
-                account.update_unconfirmed_balance
+              account = accounts.find_by(:addresses.in => [transaction["address"]])
+            elsif transaction["category"] == "send"
+              account = accounts.find_by(label: transaction["comment"])
+            end
+            if account
+              new_transaction = transactions.create(account_label:  account.label,
+                                                    transaction_id: transaction["txid"],
+                                                    address:        transaction["address"],
+                                                    amount:         BigDecimal.new(transaction["amount"].to_s),
+                                                    confirmations:  transaction["confirmations"],
+                                                    occurred_at:    (Time.at(transaction["time"].utc) if !transaction["time"].nil?),
+                                                    received_at:    (Time.at(transaction["timereceived"].utc) if !transaction["timereceived"].nil?),
+                                                    category:       transaction["category"],
+                                                    comment:        transaction["comment"]
+                                                   )
+              if transaction["category"] == "receive"
+                account.update_attributes(deposit_ids: account.deposit_ids.push(transaction["txid"]).uniq, total_received: total_received(account.label))
+                if new_transaction.confirmations >= confirmations
+                  new_transaction.confirm
+                  account.update_confirmed_balance
+                else
+                  account.update_unconfirmed_balance
+                end
               end
             end
           end
         end
-      end
-      self.transactions.where(confirmed: false, category: "receive").each do |transaction|
-        wallet_transaction = coind.get_transaction(transaction.transaction_id)
-        transaction.update_attributes(confirmations: wallet_transaction['confirmations'])
-        if transaction.confirmations >= confirmations
-          transaction.confirm
-          account.update_confirmed_balance
+        self.transactions.where(confirmed: false, category: "receive").each do |transaction|
+          wallet_transaction = coind.get_transaction(transaction.transaction_id)
+          transaction.update_attributes(confirmations: wallet_transaction['confirmations'])
+          if transaction.confirmations >= confirmations
+            transaction.confirm
+            account.update_confirmed_balance
+          end
         end
+        update_balances
+        update_attributes(last_update: Time.now)
       end
-      update_balances
-      update_attributes(last_update: Time.now)
     end 
 
     def sync_transaction(transaction_id)
@@ -245,7 +253,7 @@ module RubyWallet
 
       def reset_transactions
         transactions.destroy
-        update_attributes(transction_checked_count: 0)
+        update_attributes(transaction_checked_count: 0)
       end
 
   end

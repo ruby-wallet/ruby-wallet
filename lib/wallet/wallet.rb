@@ -38,10 +38,11 @@ module RubyWallet
     def coind_online?
       begin
         response = coind.getbalance
-        if response["error"].nil?
+        if response.class != Hash
           update_attributes(rpc_online: true)
           rpc_online
         else
+          p response.to_s
           update_attributes(rpc_online: false)
           rpc_online
         end

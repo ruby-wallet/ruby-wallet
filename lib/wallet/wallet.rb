@@ -79,6 +79,7 @@ module RubyWallet
     end
 
     def transfer(sender, recipient, amount, comment = nil)
+      amount = BigDecimal.new(amount.to_s)
       if amount > BigDecimal.new(0) and sender.confirmed_balance >= amount and confirmed_balance >= amount and accounts.find(recipient.id).persisted? and accounts.find(sender.id).persisted?
         transfers.create(sender_label:    sender.label,
                          sender_id:       sender.id,
@@ -175,8 +176,8 @@ module RubyWallet
     def sync
       if coind_online?
         wallet_transactions = coind.listtransactions("*", 99999)
-        reset_transactions if transaction_checked_count > wallet_transactions.length
-        if wallet_transactions and transaction_checked_count != wallet_transactions.length and wallet_transactions[transaction_checked_count..wallet_transactions.length] > 0
+        reset_transactions if transaction_checked_count > wallet_transactions.count
+        if wallet_transactions and transaction_checked_count != wallet_transactions.count and wallet_transactions[transaction_checked_count..wallet_transactions.length].count > 0
           wallet_transactions[transaction_checked_count..wallet_transactions.length].each do |transaction|
             update_attributes(transaction_checked_count: transaction_checked_count + 1)
             if transaction["category"] == "receive"
@@ -190,8 +191,8 @@ module RubyWallet
                                                     address:        transaction["address"],
                                                     amount:         BigDecimal.new(transaction["amount"].to_s),
                                                     confirmations:  transaction["confirmations"],
-                                                    occurred_at:    (Time.at(transaction["time"].utc) if !transaction["time"].nil?),
-                                                    received_at:    (Time.at(transaction["timereceived"].utc) if !transaction["timereceived"].nil?),
+                                                    occurred_at:    (Time.at(transaction["time"]).utc if !transaction["time"].nil?),
+                                                    received_at:    (Time.at(transaction["timereceived"]).utc if !transaction["timereceived"].nil?),
                                                     category:       transaction["category"],
                                                     comment:        transaction["comment"]
                                                    )

@@ -1,4 +1,4 @@
-** This version works and was on its way to be an engine for rails but I have since redesigned the entire project and rewrote it as a service with its own API to make it much more flexible. This version is not ready to release open source yet but I will make another branch and push the changes soon.**
+**This version works and was on its way to be an engine for rails but I have since redesigned the entire project and rewrote it as a service with its own API to make it much more flexible. This version is not ready to release open source yet but I will make another branch and push the changes soon.**
 
 = Ruby-Wallet
 

@@ -97,7 +97,7 @@ A wallet embeds many accounts, each account organizes one or more coind addresse
 
   account = wallet.create_account(label)
 
-  account.label                           # returns abel used within the wallet.dat file to associate addresses
+  account.label                           # returns label used within the wallet.dat file to associate addresses
   account.addresses                       # returns an array of addresses associated with the account, new addresses are last
 
   account.total_received                  # returns the total amount received by the account
